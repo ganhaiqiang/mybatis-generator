@@ -1,1 +1,1 @@
-# my-generator
+# mybatis generator源码
