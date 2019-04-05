@@ -126,8 +126,8 @@ public class DefaultCommentGenerator implements CommentGenerator {
 		innerClass.addJavaDocLine("/**");
 		innerClass.addJavaDocLine(" * " + introspectedTable.getFullyQualifiedTable().getRemarks());
 		innerClass.addJavaDocLine(" * ");
-		innerClass.addJavaDocLine(" * @author administrator");
-		innerClass.addJavaDocLine(" * @version 1.0 " + sdf.format(new Date()));
+		innerClass.addJavaDocLine(" * @author " + System.getenv("USERNAME"));
+		innerClass.addJavaDocLine(" * @date " + sdf.format(new Date()));
 		innerClass.addJavaDocLine(" */");
 	}
 
