@@ -46,6 +46,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>mybatis-generator-${project.version}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>
