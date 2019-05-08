@@ -1,23 +1,27 @@
-/*
- *  Copyright 2009 The Apache Software Foundation
+/**
+ *    Copyright 2006-2017 the original author or authors.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package org.mybatis.generator.codegen.mybatis3.model;
 
+import static org.mybatis.generator.internal.util.JavaBeansUtil.getJavaBeansField;
+import static org.mybatis.generator.internal.util.JavaBeansUtil.getJavaBeansGetter;
+import static org.mybatis.generator.internal.util.JavaBeansUtil.getJavaBeansSetter;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.mybatis.generator.api.CommentGenerator;
@@ -41,154 +45,175 @@ import org.mybatis.generator.codegen.RootClassInfo;
  */
 public class BaseRecordGenerator extends AbstractJavaGenerator {
 
-	public BaseRecordGenerator() {
-		super();
-	}
+    public BaseRecordGenerator() {
+        super();
+    }
 
-	@Override
-	public List<CompilationUnit> getCompilationUnits() {
-		FullyQualifiedTable table = introspectedTable.getFullyQualifiedTable();
-		progressCallback.startTask(getString("Progress.8", table.toString())); //$NON-NLS-1$
-		Plugin plugins = context.getPlugins();
-		CommentGenerator commentGenerator = context.getCommentGenerator();
+    @Override
+    public List<CompilationUnit> getCompilationUnits() {
+        FullyQualifiedTable table = introspectedTable.getFullyQualifiedTable();
+        progressCallback.startTask(getString(
+                "Progress.8", table.toString())); //$NON-NLS-1$
+        Plugin plugins = context.getPlugins();
+        CommentGenerator commentGenerator = context.getCommentGenerator();
 
-		FullyQualifiedJavaType type = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
-		TopLevelClass topLevelClass = new TopLevelClass(type);
-		topLevelClass.setVisibility(JavaVisibility.PUBLIC);
-		commentGenerator.addJavaFileComment(topLevelClass);
-		commentGenerator.addClassComment(topLevelClass, introspectedTable);
-		FullyQualifiedJavaType superClass = getSuperClass();
-		if (superClass != null) {
-			topLevelClass.setSuperClass(superClass);
-			topLevelClass.addImportedType(superClass);
-		}
+        FullyQualifiedJavaType type = new FullyQualifiedJavaType(
+                introspectedTable.getBaseRecordType());
+        TopLevelClass topLevelClass = new TopLevelClass(type);
+        topLevelClass.setVisibility(JavaVisibility.PUBLIC);
+        commentGenerator.addJavaFileComment(topLevelClass);
 
-		List<IntrospectedColumn> introspectedColumns = getColumnsInThisClass();
+        FullyQualifiedJavaType superClass = getSuperClass();
+        if (superClass != null) {
+            topLevelClass.setSuperClass(superClass);
+            topLevelClass.addImportedType(superClass);
+        }
+        commentGenerator.addModelClassComment(topLevelClass, introspectedTable);
 
-		if (introspectedTable.isConstructorBased()) {
-			addParameterizedConstructor(topLevelClass);
+        List<IntrospectedColumn> introspectedColumns = getColumnsInThisClass();
 
-			if (!introspectedTable.isImmutable()) {
-				addDefaultConstructor(topLevelClass);
-			}
-		}
+        if (introspectedTable.isConstructorBased()) {
+            addParameterizedConstructor(topLevelClass, introspectedTable.getNonBLOBColumns());
 
-		String rootClass = getRootClass();
-		for (IntrospectedColumn introspectedColumn : introspectedColumns) {
-			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
-				continue;
-			}
+            if (includeBLOBColumns()) {
+                addParameterizedConstructor(topLevelClass, introspectedTable.getAllColumns());
+            }
 
-			Field field = getJavaBeansField(introspectedColumn);
-			if (plugins.modelFieldGenerated(field, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-				topLevelClass.addField(field);
-				topLevelClass.addImportedType(field.getType());
-			}
+            if (!introspectedTable.isImmutable()) {
+                addDefaultConstructor(topLevelClass);
+            }
+        }
 
-			Method method = getJavaBeansGetter(introspectedColumn);
-			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-				topLevelClass.addMethod(method);
-			}
+        String rootClass = getRootClass();
+        for (IntrospectedColumn introspectedColumn : introspectedColumns) {
+            if (RootClassInfo.getInstance(rootClass, warnings)
+                    .containsProperty(introspectedColumn)) {
+                continue;
+            }
 
-			if (!introspectedTable.isImmutable()) {
-				method = getJavaBeansSetter(introspectedColumn);
-				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-					topLevelClass.addMethod(method);
-				}
-			}
-		}
+            Field field = getJavaBeansField(introspectedColumn, context, introspectedTable);
+            if (plugins.modelFieldGenerated(field, topLevelClass,
+                    introspectedColumn, introspectedTable,
+                    Plugin.ModelClassType.BASE_RECORD)) {
+                topLevelClass.addField(field);
+                topLevelClass.addImportedType(field.getType());
+            }
 
-		List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
-		if (context.getPlugins().modelBaseRecordClassGenerated(topLevelClass, introspectedTable)) {
-			answer.add(topLevelClass);
-		}
-		return answer;
-	}
+            Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
+            if (plugins.modelGetterMethodGenerated(method, topLevelClass,
+                    introspectedColumn, introspectedTable,
+                    Plugin.ModelClassType.BASE_RECORD)) {
+                topLevelClass.addMethod(method);
+            }
 
-	private FullyQualifiedJavaType getSuperClass() {
-		FullyQualifiedJavaType superClass;
-		if (introspectedTable.getRules().generatePrimaryKeyClass()) {
-			superClass = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
-		} else {
-			String rootClass = getRootClass();
-			if (rootClass != null) {
-				superClass = new FullyQualifiedJavaType(rootClass);
-			} else {
-				superClass = null;
-			}
-		}
+            if (!introspectedTable.isImmutable()) {
+                method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
+                if (plugins.modelSetterMethodGenerated(method, topLevelClass,
+                        introspectedColumn, introspectedTable,
+                        Plugin.ModelClassType.BASE_RECORD)) {
+                    topLevelClass.addMethod(method);
+                }
+            }
+        }
 
-		return superClass;
-	}
+        List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
+        if (context.getPlugins().modelBaseRecordClassGenerated(
+                topLevelClass, introspectedTable)) {
+            answer.add(topLevelClass);
+        }
+        return answer;
+    }
 
-	private boolean includePrimaryKeyColumns() {
-		return !introspectedTable.getRules().generatePrimaryKeyClass() && introspectedTable.hasPrimaryKeyColumns();
-	}
+    private FullyQualifiedJavaType getSuperClass() {
+        FullyQualifiedJavaType superClass;
+        if (introspectedTable.getRules().generatePrimaryKeyClass()) {
+            superClass = new FullyQualifiedJavaType(introspectedTable
+                    .getPrimaryKeyType());
+        } else {
+            String rootClass = getRootClass();
+            if (rootClass != null) {
+                superClass = new FullyQualifiedJavaType(rootClass);
+            } else {
+                superClass = null;
+            }
+        }
 
-	private boolean includeBLOBColumns() {
-		return !introspectedTable.getRules().generateRecordWithBLOBsClass() && introspectedTable.hasBLOBColumns();
-	}
+        return superClass;
+    }
 
-	private void addParameterizedConstructor(TopLevelClass topLevelClass) {
-		Method method = new Method();
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.setConstructor(true);
-		method.setName(topLevelClass.getType().getShortName());
-		context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
+    private boolean includePrimaryKeyColumns() {
+        return !introspectedTable.getRules().generatePrimaryKeyClass()
+                && introspectedTable.hasPrimaryKeyColumns();
+    }
 
-		List<IntrospectedColumn> constructorColumns = includeBLOBColumns() ? introspectedTable.getAllColumns() : introspectedTable.getNonBLOBColumns();
+    private boolean includeBLOBColumns() {
+        return !introspectedTable.getRules().generateRecordWithBLOBsClass()
+                && introspectedTable.hasBLOBColumns();
+    }
 
-		for (IntrospectedColumn introspectedColumn : constructorColumns) {
-			method.addParameter(new Parameter(introspectedColumn.getFullyQualifiedJavaType(), introspectedColumn.getJavaProperty()));
-		}
+    private void addParameterizedConstructor(TopLevelClass topLevelClass, List<IntrospectedColumn> constructorColumns) {
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setConstructor(true);
+        method.setName(topLevelClass.getType().getShortName());
+        context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
 
-		StringBuilder sb = new StringBuilder();
-		if (introspectedTable.getRules().generatePrimaryKeyClass()) {
-			boolean comma = false;
-			sb.append("super("); //$NON-NLS-1$
-			for (IntrospectedColumn introspectedColumn : introspectedTable.getPrimaryKeyColumns()) {
-				if (comma) {
-					sb.append(", "); //$NON-NLS-1$
-				} else {
-					comma = true;
-				}
-				sb.append(introspectedColumn.getJavaProperty());
-			}
-			sb.append(");"); //$NON-NLS-1$
-			method.addBodyLine(sb.toString());
-		}
+        for (IntrospectedColumn introspectedColumn : constructorColumns) {
+            method.addParameter(new Parameter(introspectedColumn.getFullyQualifiedJavaType(),
+                    introspectedColumn.getJavaProperty()));
+            topLevelClass.addImportedType(introspectedColumn.getFullyQualifiedJavaType());
+        }
 
-		List<IntrospectedColumn> introspectedColumns = getColumnsInThisClass();
+        StringBuilder sb = new StringBuilder();
+        List<String> superColumns = new LinkedList<String>();
+        if (introspectedTable.getRules().generatePrimaryKeyClass()) {
+            boolean comma = false;
+            sb.append("super("); //$NON-NLS-1$
+            for (IntrospectedColumn introspectedColumn : introspectedTable.getPrimaryKeyColumns()) {
+                if (comma) {
+                    sb.append(", "); //$NON-NLS-1$
+                } else {
+                    comma = true;
+                }
+                sb.append(introspectedColumn.getJavaProperty());
+                superColumns.add(introspectedColumn.getActualColumnName());
+            }
+            sb.append(");"); //$NON-NLS-1$
+            method.addBodyLine(sb.toString());
+        }
 
-		for (IntrospectedColumn introspectedColumn : introspectedColumns) {
-			sb.setLength(0);
-			sb.append("this."); //$NON-NLS-1$
-			sb.append(introspectedColumn.getJavaProperty());
-			sb.append(" = "); //$NON-NLS-1$
-			sb.append(introspectedColumn.getJavaProperty());
-			sb.append(';');
-			method.addBodyLine(sb.toString());
-		}
+        for (IntrospectedColumn introspectedColumn : constructorColumns) {
+            if (!superColumns.contains(introspectedColumn.getActualColumnName())) {
+                sb.setLength(0);
+                sb.append("this."); //$NON-NLS-1$
+                sb.append(introspectedColumn.getJavaProperty());
+                sb.append(" = "); //$NON-NLS-1$
+                sb.append(introspectedColumn.getJavaProperty());
+                sb.append(';');
+                method.addBodyLine(sb.toString());
+            }
+        }
 
-		topLevelClass.addMethod(method);
-	}
+        topLevelClass.addMethod(method);
+    }
 
-	private List<IntrospectedColumn> getColumnsInThisClass() {
-		List<IntrospectedColumn> introspectedColumns;
-		if (includePrimaryKeyColumns()) {
-			if (includeBLOBColumns()) {
-				introspectedColumns = introspectedTable.getAllColumns();
-			} else {
-				introspectedColumns = introspectedTable.getNonBLOBColumns();
-			}
-		} else {
-			if (includeBLOBColumns()) {
-				introspectedColumns = introspectedTable.getNonPrimaryKeyColumns();
-			} else {
-				introspectedColumns = introspectedTable.getBaseColumns();
-			}
-		}
+    private List<IntrospectedColumn> getColumnsInThisClass() {
+        List<IntrospectedColumn> introspectedColumns;
+        if (includePrimaryKeyColumns()) {
+            if (includeBLOBColumns()) {
+                introspectedColumns = introspectedTable.getAllColumns();
+            } else {
+                introspectedColumns = introspectedTable.getNonBLOBColumns();
+            }
+        } else {
+            if (includeBLOBColumns()) {
+                introspectedColumns = introspectedTable
+                        .getNonPrimaryKeyColumns();
+            } else {
+                introspectedColumns = introspectedTable.getBaseColumns();
+            }
+        }
 
-		return introspectedColumns;
-	}
+        return introspectedColumns;
+    }
 }

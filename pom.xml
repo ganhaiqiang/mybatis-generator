@@ -1,12 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.mybatis.generator</groupId>
-	<artifactId>MyGenerator</artifactId>
-	<version>1.3.3</version>
+	<artifactId>MybatisGenerator</artifactId>
+	<version>1.7</version>
 	<packaging>jar</packaging>
 
-	<name>MyGenerator</name>
+	<name>MybatisGenerator</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -22,24 +24,52 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.8.2</version>
+			<version>1.10.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<version>5.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.4.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
+			<version>3.6.12</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.58</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 		</dependency>
 	</dependencies>
 
@@ -64,21 +94,45 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<archive>
-						<manifest>
-							<mainClass>org.mybatis.generator.api.ShellRunner</mainClass>
-						</manifest>
-					</archive>
-					<classesDirectory>
-					</classesDirectory>
-				</configuration>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-jar-plugin</artifactId> -->
+<!-- 				<configuration> -->
+<!-- 					<source>1.8</source> -->
+<!-- 					<target>1.8</target> -->
+<!-- 					<archive> -->
+<!-- 						<manifest> -->
+<!-- 							<mainClass>org.mybatis.generator.api.ShellRunner</mainClass> -->
+<!-- 						</manifest> -->
+<!-- 					</archive> -->
+<!-- 					<classesDirectory> -->
+<!-- 					</classesDirectory> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+<plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <!-- 此处指定main方法入口的class -->
+                            <mainClass>org.mybatis.generator.api.ShellRunner</mainClass>
+                        </manifest>
+                    </archive>
+               </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 </project>

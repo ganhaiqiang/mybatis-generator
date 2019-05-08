@@ -1,17 +1,17 @@
-/*
- *  Copyright 2005 The Apache Software Foundation
+/**
+ *    Copyright 2006-2018 the original author or authors.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package org.mybatis.generator.internal.db;
 
@@ -26,8 +26,8 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +43,7 @@ import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.JavaTypeResolver;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.JavaReservedWords;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.GeneratedKey;
@@ -52,16 +53,21 @@ import org.mybatis.generator.internal.ObjectFactory;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
+
 /**
- * 
  * @author Jeff Butler
  */
 public class DatabaseIntrospector {
 
 	private DatabaseMetaData databaseMetaData;
+
 	private JavaTypeResolver javaTypeResolver;
+
 	private List<String> warnings;
+
 	private Context context;
+
 	private Log logger;
 
 	public DatabaseIntrospector(Context context, DatabaseMetaData databaseMetaData, JavaTypeResolver javaTypeResolver, List<String> warnings) {
@@ -109,7 +115,6 @@ public class DatabaseIntrospector {
 				rs.close();
 			} catch (SQLException e) {
 				// ignore
-				;
 			}
 		}
 	}
@@ -141,14 +146,21 @@ public class DatabaseIntrospector {
 						generatedKey.getColumn(), table.toString()));
 			}
 		}
+
+		for (IntrospectedColumn ic : introspectedTable.getAllColumns()) {
+			if (JavaReservedWords.containsWord(ic.getJavaProperty())) {
+				warnings.add(getString("Warning.26", //$NON-NLS-1$
+						ic.getActualColumnName(), table.toString()));
+			}
+		}
 	}
 
 	/**
-	 * Returns a List<IntrospectedTable> that matches the specified table configuration.
-	 * 
-	 * @param tc
+	 * Returns a List of IntrospectedTable elements that matches the specified table configuration.
+	 *
+	 * @param tc the table configuration
 	 * @return a list of introspected tables
-	 * @throws SQLException
+	 * @throws SQLException if any errors in introspection
 	 */
 	public List<IntrospectedTable> introspectTables(TableConfiguration tc) throws SQLException {
 
@@ -198,13 +210,9 @@ public class DatabaseIntrospector {
 		return introspectedTables;
 	}
 
-	/**
-	 * @param tc
-	 * @param columns
-	 */
 	private void removeIgnoredColumns(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
 		for (Map.Entry<ActualTableName, List<IntrospectedColumn>> entry : columns.entrySet()) {
-			Iterator<IntrospectedColumn> tableColumns = (entry.getValue()).iterator();
+			Iterator<IntrospectedColumn> tableColumns = entry.getValue().iterator();
 			while (tableColumns.hasNext()) {
 				IntrospectedColumn introspectedColumn = tableColumns.next();
 				if (tc.isColumnIgnored(introspectedColumn.getActualColumnName())) {
@@ -263,10 +271,8 @@ public class DatabaseIntrospector {
 					}
 
 					ColumnOverride co = tc.getColumnOverride(introspectedColumn.getActualColumnName());
-					if (co != null) {
-						if (stringHasValue(co.getJavaType()) && stringHasValue(co.getJavaType())) {
-							warn = false;
-						}
+					if (co != null && stringHasValue(co.getJavaType())) {
+						warn = false;
 					}
 
 					// if the type is not supported, then we'll report a warning
@@ -281,10 +287,8 @@ public class DatabaseIntrospector {
 					}
 				}
 
-				if (context.autoDelimitKeywords()) {
-					if (SqlReservedWords.containsWord(introspectedColumn.getActualColumnName())) {
-						introspectedColumn.setColumnNameDelimited(true);
-					}
+				if (context.autoDelimitKeywords() && SqlReservedWords.containsWord(introspectedColumn.getActualColumnName())) {
+					introspectedColumn.setColumnNameDelimited(true);
 				}
 
 				if (tc.isAllColumnDelimitingEnabled()) {
@@ -355,26 +359,21 @@ public class DatabaseIntrospector {
 						introspectedColumn.setColumnNameDelimited(true);
 					}
 
+					introspectedColumn.setGeneratedAlways(columnOverride.isGeneratedAlways());
+
 					introspectedColumn.setProperties(columnOverride.getProperties());
+
 				}
 			}
 		}
 	}
 
-	/**
-	 * This method returns a Map<ActualTableName, List<ColumnDefinitions>> of columns returned from the database introspection.
-	 * 
-	 * @param tc
-	 * @return introspected columns
-	 * @throws SQLException
-	 */
 	private Map<ActualTableName, List<IntrospectedColumn>> getColumns(TableConfiguration tc) throws SQLException {
 		String localCatalog;
 		String localSchema;
 		String localTableName;
 
-		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc
-				.getSchema()) || stringContainsSpace(tc.getTableName());
+		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc.getSchema()) || stringContainsSpace(tc.getTableName());
 
 		if (delimitIdentifiers) {
 			localCatalog = tc.getCatalog();
@@ -432,7 +431,20 @@ public class DatabaseIntrospector {
 			logger.debug(getString("Tracing.1", fullTableName)); //$NON-NLS-1$
 		}
 
-		ResultSet rs = databaseMetaData.getColumns(localCatalog, localSchema, localTableName, null);
+		ResultSet rs = databaseMetaData.getColumns(localCatalog, localSchema, localTableName, "%"); //$NON-NLS-1$
+
+		boolean supportsIsAutoIncrement = false;
+		boolean supportsIsGeneratedColumn = false;
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int colCount = rsmd.getColumnCount();
+		for (int i = 1; i <= colCount; i++) {
+			if ("IS_AUTOINCREMENT".equals(rsmd.getColumnName(i))) { //$NON-NLS-1$
+				supportsIsAutoIncrement = true;
+			}
+			if ("IS_GENERATEDCOLUMN".equals(rsmd.getColumnName(i))) { //$NON-NLS-1$
+				supportsIsGeneratedColumn = true;
+			}
+		}
 
 		while (rs.next()) {
 			IntrospectedColumn introspectedColumn = ObjectFactory.createIntrospectedColumn(context);
@@ -445,6 +457,14 @@ public class DatabaseIntrospector {
 			introspectedColumn.setScale(rs.getInt("DECIMAL_DIGITS")); //$NON-NLS-1$
 			introspectedColumn.setRemarks(rs.getString("REMARKS")); //$NON-NLS-1$
 			introspectedColumn.setDefaultValue(rs.getString("COLUMN_DEF")); //$NON-NLS-1$
+
+			if (supportsIsAutoIncrement) {
+				introspectedColumn.setAutoIncrement("YES".equals(rs.getString("IS_AUTOINCREMENT"))); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+
+			if (supportsIsGeneratedColumn) {
+				introspectedColumn.setGeneratedColumn("YES".equals(rs.getString("IS_GENERATEDCOLUMN"))); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 
 			ActualTableName atn = new ActualTableName(rs.getString("TABLE_CAT"), //$NON-NLS-1$
 					rs.getString("TABLE_SCHEM"), //$NON-NLS-1$
@@ -489,11 +509,8 @@ public class DatabaseIntrospector {
 		return answer;
 	}
 
-	private List<IntrospectedTable> calculateIntrospectedTables(
-			TableConfiguration tc,
-			Map<ActualTableName, List<IntrospectedColumn>> columns) throws SQLException {
-		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc
-				.getSchema()) || stringContainsSpace(tc.getTableName());
+	private List<IntrospectedTable> calculateIntrospectedTables(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
+		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc.getSchema()) || stringContainsSpace(tc.getTableName());
 
 		List<IntrospectedTable> answer = new ArrayList<IntrospectedTable>();
 
@@ -507,32 +524,9 @@ public class DatabaseIntrospector {
 			// table
 			// configuration, then some sort of DB default is being returned
 			// and we don't want that in our SQL
-			FullyQualifiedTable table = new FullyQualifiedTable(stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, stringHasValue(tc.getSchema()) ? atn
-					.getSchema() : null, atn.getTableName(), tc.getDomainObjectName(), tc
-							.getAlias(), isTrue(tc.getProperty(PropertyRegistry.TABLE_IGNORE_QUALIFIERS_AT_RUNTIME)), tc
-									.getProperty(PropertyRegistry.TABLE_RUNTIME_CATALOG), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_SCHEMA), tc
-											.getProperty(PropertyRegistry.TABLE_RUNTIME_TABLE_NAME), delimitIdentifiers, context);
-//			ResultSet rs = databaseMetaData
-//					.getTables(tc.getCatalog(), tc.getSchema(),
-//							null, new String[] { "TABLE" });
-
-			Statement stmt = databaseMetaData.getConnection().createStatement();
-			// ================================
-			String productName = databaseMetaData.getDatabaseProductName();
-			String queryString = "";
-			if ("MySQL".equals(productName)) {
-				queryString = "SHOW TABLE STATUS LIKE '" + atn.getTableName() + "'";
-			}
-			if ("Oracle".equals(productName)) {
-				queryString = "SELECT TABLE_NAME, TABLE_TYPE, COMMENTS \"COMMENT\" FROM USER_TAB_COMMENTS WHERE TABLE_NAME = '" + atn.getTableName() + "'";
-			}
-			// ================================
-			ResultSet rs = stmt.executeQuery(queryString);
-			while (rs.next()) {
-				table.setRemarks(rs.getString("COMMENT"));
-			}
-			closeResultSet(rs);
-			stmt.close();
+			FullyQualifiedTable table = new FullyQualifiedTable(stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, stringHasValue(tc.getSchema()) ? atn.getSchema() : null, atn.getTableName(), tc.getDomainObjectName(), tc
+					.getAlias(), isTrue(tc.getProperty(PropertyRegistry.TABLE_IGNORE_QUALIFIERS_AT_RUNTIME)), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_CATALOG), tc
+							.getProperty(PropertyRegistry.TABLE_RUNTIME_SCHEMA), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_TABLE_NAME), delimitIdentifiers, tc.getDomainObjectRenamingRule(), context);
 
 			IntrospectedTable introspectedTable = ObjectFactory.createIntrospectedTable(tc, table, context);
 
@@ -542,9 +536,36 @@ public class DatabaseIntrospector {
 
 			calculatePrimaryKey(table, introspectedTable);
 
+			enhanceIntrospectedTable(introspectedTable);
+
 			answer.add(introspectedTable);
 		}
 
 		return answer;
+	}
+
+	/**
+	 * Calls database metadata to retrieve extra information about the table such as remarks associated with the table and the type.
+	 *
+	 * <p>
+	 * If there is any error, we just add a warning and continue.
+	 *
+	 * @param introspectedTable the introspected table to enhance
+	 */
+	private void enhanceIntrospectedTable(IntrospectedTable introspectedTable) {
+		try {
+			FullyQualifiedTable fqt = introspectedTable.getFullyQualifiedTable();
+
+			ResultSet rs = databaseMetaData.getTables(fqt.getIntrospectedCatalog(), fqt.getIntrospectedSchema(), fqt.getIntrospectedTableName(), null);
+			if (rs.next()) {
+				String remarks = rs.getString("REMARKS"); //$NON-NLS-1$
+				String tableType = rs.getString("TABLE_TYPE"); //$NON-NLS-1$
+				introspectedTable.setRemarks(remarks);
+				introspectedTable.setTableType(tableType);
+			}
+			closeResultSet(rs);
+		} catch (SQLException e) {
+			warnings.add(getString("Warning.27", e.getMessage())); //$NON-NLS-1$
+		}
 	}
 }
