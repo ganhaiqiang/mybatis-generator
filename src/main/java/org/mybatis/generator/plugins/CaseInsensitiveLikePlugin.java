@@ -33,7 +33,8 @@ import org.mybatis.generator.codegen.ibatis2.Ibatis2FormattingUtilities;
  * case-insensitive LIKE searches. It shows hows to construct new methods and
  * add them to an existing class.
  * 
- * <p>This plugin only adds methods for String fields mapped to a JDBC character
+ * <p>
+ * This plugin only adds methods for String fields mapped to a JDBC character
  * type (CHAR, VARCHAR, etc.)
  * 
  * @author Jeff Butler
@@ -41,66 +42,61 @@ import org.mybatis.generator.codegen.ibatis2.Ibatis2FormattingUtilities;
  */
 public class CaseInsensitiveLikePlugin extends PluginAdapter {
 
-    public CaseInsensitiveLikePlugin() {
-        super();
-    }
+	public CaseInsensitiveLikePlugin() {
+		super();
+	}
 
-    @Override
-    public boolean validate(List<String> warnings) {
-        return true;
-    }
+	@Override
+	public boolean validate(List<String> warnings) {
+		return true;
+	}
 
-    @Override
-    public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable) {
+	@Override
+	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 
-        InnerClass criteria = null;
-        // first, find the Criteria inner class
-        for (InnerClass innerClass : topLevelClass.getInnerClasses()) {
-            if ("GeneratedCriteria".equals(innerClass.getType().getShortName())) {
-                criteria = innerClass;
-                break;
-            }
-        }
+		InnerClass criteria = null;
+		// first, find the Criteria inner class
+		for (InnerClass innerClass : topLevelClass.getInnerClasses()) {
+			if ("GeneratedCriteria".equals(innerClass.getType().getShortName())) {
+				criteria = innerClass;
+				break;
+			}
+		}
 
-        if (criteria == null) {
-            // can't find the inner class for some reason, bail out.
-            return true;
-        }
+		if (criteria == null) {
+			// can't find the inner class for some reason, bail out.
+			return true;
+		}
 
-        for (IntrospectedColumn introspectedColumn : introspectedTable
-                .getNonBLOBColumns()) {
-            if (!introspectedColumn.isJdbcCharacterColumn()
-                    || !introspectedColumn.isStringColumn()) {
-                continue;
-            }
+		for (IntrospectedColumn introspectedColumn : introspectedTable.getNonBLOBColumns()) {
+			if (!introspectedColumn.isJdbcCharacterColumn() || !introspectedColumn.isStringColumn()) {
+				continue;
+			}
 
-            Method method = new Method();
-            method.setVisibility(JavaVisibility.PUBLIC);
-            method.addParameter(new Parameter(introspectedColumn
-                    .getFullyQualifiedJavaType(), "value"));
+			Method method = new Method();
+			method.setVisibility(JavaVisibility.PUBLIC);
+			method.addParameter(new Parameter(introspectedColumn.getFullyQualifiedJavaType(), "value"));
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(introspectedColumn.getJavaProperty());
-            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-            sb.insert(0, "and");
-            sb.append("LikeInsensitive");
-            method.setName(sb.toString());
-            method.setReturnType(FullyQualifiedJavaType.getCriteriaInstance());
+			StringBuilder sb = new StringBuilder();
+			sb.append(introspectedColumn.getJavaProperty());
+			sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+			sb.insert(0, "and");
+			sb.append("LikeInsensitive");
+			method.setName(sb.toString());
+			method.setReturnType(FullyQualifiedJavaType.getCriteriaInstance());
 
-            sb.setLength(0);
-            sb.append("addCriterion(\"upper(");
-            sb.append(Ibatis2FormattingUtilities
-                    .getAliasedActualColumnName(introspectedColumn));
-            sb.append(") like\", value.toUpperCase(), \"");
-            sb.append(introspectedColumn.getJavaProperty());
-            sb.append("\");");
-            method.addBodyLine(sb.toString());
-            method.addBodyLine("return (Criteria) this;");
+			sb.setLength(0);
+			sb.append("addCriterion(\"upper(");
+			sb.append(Ibatis2FormattingUtilities.getAliasedActualColumnName(introspectedColumn));
+			sb.append(") like\", value.toUpperCase(), \"");
+			sb.append(introspectedColumn.getJavaProperty());
+			sb.append("\");");
+			method.addBodyLine(sb.toString());
+			method.addBodyLine("return (Criteria) this;");
 
-            criteria.addMethod(method);
-        }
+			criteria.addMethod(method);
+		}
 
-        return true;
-    }
+		return true;
+	}
 }

@@ -26,33 +26,34 @@ import org.mybatis.generator.internal.NullProgressCallback;
  */
 public class AntProgressCallback extends NullProgressCallback {
 
-    /** The task. */
-    private Task task;
+	/** The task. */
+	private Task task;
 
-    /** The verbose. */
-    private boolean verbose;
+	/** The verbose. */
+	private boolean verbose;
 
-    /**
-     * Instantiates a new ant progress callback.
-     *
-     * @param task
-     *            the task
-     * @param verbose
-     *            the verbose
-     */
-    public AntProgressCallback(Task task, boolean verbose) {
-        super();
-        this.task = task;
-        this.verbose = verbose;
-    }
+	/**
+	 * Instantiates a new ant progress callback.
+	 *
+	 * @param task    the task
+	 * @param verbose the verbose
+	 */
+	public AntProgressCallback(Task task, boolean verbose) {
+		super();
+		this.task = task;
+		this.verbose = verbose;
+	}
 
-    /* (non-Javadoc)
-     * @see org.mybatis.generator.internal.NullProgressCallback#startTask(java.lang.String)
-     */
-    @Override
-    public void startTask(String subTaskName) {
-        if (verbose) {
-            task.log(subTaskName, Project.MSG_VERBOSE);
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mybatis.generator.internal.NullProgressCallback#startTask(java.lang.
+	 * String)
+	 */
+	@Override
+	public void startTask(String subTaskName) {
+		if (verbose) {
+			task.log(subTaskName, Project.MSG_VERBOSE);
+		}
+	}
 }

@@ -30,10 +30,12 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
  * This plugin adds the java.io.Serializable marker interface to all generated
  * model objects.
  * 
- * <p>This plugin demonstrates adding capabilities to generated Java artifacts, and
+ * <p>
+ * This plugin demonstrates adding capabilities to generated Java artifacts, and
  * shows the proper way to add imports to a compilation unit.
  * 
- * <p>Important: This is a simplistic implementation of serializable and does not
+ * <p>
+ * Important: This is a simplistic implementation of serializable and does not
  * attempt to do any versioning of classes.
  * 
  * @author Jeff Butler
@@ -41,78 +43,73 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
  */
 public class SerializablePlugin extends PluginAdapter {
 
-    private FullyQualifiedJavaType serializable;
-    private FullyQualifiedJavaType gwtSerializable;
-    private boolean addGWTInterface;
-    private boolean suppressJavaInterface;
+	private FullyQualifiedJavaType serializable;
+	private FullyQualifiedJavaType gwtSerializable;
+	private boolean addGWTInterface;
+	private boolean suppressJavaInterface;
 
-    public SerializablePlugin() {
-        super();
-        serializable = new FullyQualifiedJavaType("java.io.Serializable");
-        gwtSerializable = new FullyQualifiedJavaType("com.google.gwt.user.client.rpc.IsSerializable");
-    }
+	public SerializablePlugin() {
+		super();
+		serializable = new FullyQualifiedJavaType("java.io.Serializable");
+		gwtSerializable = new FullyQualifiedJavaType("com.google.gwt.user.client.rpc.IsSerializable");
+	}
 
-    @Override
-    public boolean validate(List<String> warnings) {
-        // this plugin is always valid
-        return true;
-    }
+	@Override
+	public boolean validate(List<String> warnings) {
+		// this plugin is always valid
+		return true;
+	}
 
-    @Override
-    public void setProperties(Properties properties) {
-        super.setProperties(properties);
-        addGWTInterface = Boolean.valueOf(properties.getProperty("addGWTInterface"));
-        suppressJavaInterface = Boolean.valueOf(properties.getProperty("suppressJavaInterface"));
-    }
+	@Override
+	public void setProperties(Properties properties) {
+		super.setProperties(properties);
+		addGWTInterface = Boolean.valueOf(properties.getProperty("addGWTInterface"));
+		suppressJavaInterface = Boolean.valueOf(properties.getProperty("suppressJavaInterface"));
+	}
 
-    @Override
-    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable) {
-        makeSerializable(topLevelClass, introspectedTable);
-        return true;
-    }
+	@Override
+	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		makeSerializable(topLevelClass, introspectedTable);
+		return true;
+	}
 
-    @Override
-    public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable) {
-        makeSerializable(topLevelClass, introspectedTable);
-        return true;
-    }
+	@Override
+	public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		makeSerializable(topLevelClass, introspectedTable);
+		return true;
+	}
 
-    @Override
-    public boolean modelRecordWithBLOBsClassGenerated(
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        makeSerializable(topLevelClass, introspectedTable);
-        return true;
-    }
+	@Override
+	public boolean modelRecordWithBLOBsClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		makeSerializable(topLevelClass, introspectedTable);
+		return true;
+	}
 
-    protected void makeSerializable(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable) {
-        if (addGWTInterface) {
-            topLevelClass.addImportedType(gwtSerializable);
-            topLevelClass.addSuperInterface(gwtSerializable);
-        }
+	protected void makeSerializable(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if (addGWTInterface) {
+			topLevelClass.addImportedType(gwtSerializable);
+			topLevelClass.addSuperInterface(gwtSerializable);
+		}
 
-        if (!suppressJavaInterface) {
-            topLevelClass.addImportedType(serializable);
-            topLevelClass.addSuperInterface(serializable);
+		if (!suppressJavaInterface) {
+			topLevelClass.addImportedType(serializable);
+			topLevelClass.addSuperInterface(serializable);
 
-            Field field = new Field();
-            field.setFinal(true);
-            field.setInitializationString("1L");
-            field.setName("serialVersionUID");
-            field.setStatic(true);
-            field.setType(new FullyQualifiedJavaType("long"));
-            field.setVisibility(JavaVisibility.PRIVATE);
-            
-            if (introspectedTable.getTargetRuntime() == TargetRuntime.MYBATIS3_DSQL) {
-                context.getCommentGenerator().addFieldAnnotation(field, introspectedTable,
-                        topLevelClass.getImportedTypes());
-            } else {
-                context.getCommentGenerator().addFieldComment(field, introspectedTable);
-            }
+			Field field = new Field();
+			field.setFinal(true);
+			field.setInitializationString("1L");
+			field.setName("serialVersionUID");
+			field.setStatic(true);
+			field.setType(new FullyQualifiedJavaType("long"));
+			field.setVisibility(JavaVisibility.PRIVATE);
 
-            topLevelClass.addField(field);
-        }
-    }
+			if (introspectedTable.getTargetRuntime() == TargetRuntime.MYBATIS3_DSQL) {
+				context.getCommentGenerator().addFieldAnnotation(field, introspectedTable, topLevelClass.getImportedTypes());
+			} else {
+				context.getCommentGenerator().addFieldComment(field, introspectedTable);
+			}
+
+			topLevelClass.addField(field);
+		}
+	}
 }

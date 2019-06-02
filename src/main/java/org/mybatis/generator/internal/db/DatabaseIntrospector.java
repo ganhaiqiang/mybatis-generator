@@ -53,8 +53,6 @@ import org.mybatis.generator.internal.ObjectFactory;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
-import com.alibaba.fastjson.JSON;
-
 /**
  * @author Jeff Butler
  */
@@ -124,39 +122,35 @@ public class DatabaseIntrospector {
 		// actually exists in the table
 		for (ColumnOverride columnOverride : tableConfiguration.getColumnOverrides()) {
 			if (introspectedTable.getColumn(columnOverride.getColumnName()) == null) {
-				warnings.add(getString("Warning.3",
-						columnOverride.getColumnName(), table.toString()));
+				warnings.add(getString("Warning.3", columnOverride.getColumnName(), table.toString()));
 			}
 		}
 
 		// make sure that every column listed in ignored columns
 		// actually exists in the table
 		for (String string : tableConfiguration.getIgnoredColumnsInError()) {
-			warnings.add(getString("Warning.4",
-					string, table.toString()));
+			warnings.add(getString("Warning.4", string, table.toString()));
 		}
 
 		GeneratedKey generatedKey = tableConfiguration.getGeneratedKey();
 		if (generatedKey != null && introspectedTable.getColumn(generatedKey.getColumn()) == null) {
 			if (generatedKey.isIdentity()) {
-				warnings.add(getString("Warning.5",
-						generatedKey.getColumn(), table.toString()));
+				warnings.add(getString("Warning.5", generatedKey.getColumn(), table.toString()));
 			} else {
-				warnings.add(getString("Warning.6",
-						generatedKey.getColumn(), table.toString()));
+				warnings.add(getString("Warning.6", generatedKey.getColumn(), table.toString()));
 			}
 		}
 
 		for (IntrospectedColumn ic : introspectedTable.getAllColumns()) {
 			if (JavaReservedWords.containsWord(ic.getJavaProperty())) {
-				warnings.add(getString("Warning.26",
-						ic.getActualColumnName(), table.toString()));
+				warnings.add(getString("Warning.26", ic.getActualColumnName(), table.toString()));
 			}
 		}
 	}
 
 	/**
-	 * Returns a List of IntrospectedTable elements that matches the specified table configuration.
+	 * Returns a List of IntrospectedTable elements that matches the specified table
+	 * configuration.
 	 *
 	 * @param tc the table configuration
 	 * @return a list of introspected tables
@@ -168,8 +162,7 @@ public class DatabaseIntrospector {
 		Map<ActualTableName, List<IntrospectedColumn>> columns = getColumns(tc);
 
 		if (columns.isEmpty()) {
-			warnings.add(getString("Warning.19", tc.getCatalog(),
-					tc.getSchema(), tc.getTableName()));
+			warnings.add(getString("Warning.19", tc.getCatalog(), tc.getSchema(), tc.getTableName()));
 			return null;
 		}
 
@@ -218,8 +211,7 @@ public class DatabaseIntrospector {
 				if (tc.isColumnIgnored(introspectedColumn.getActualColumnName())) {
 					tableColumns.remove();
 					if (logger.isDebugEnabled()) {
-						logger.debug(getString("Tracing.3",
-								introspectedColumn.getActualColumnName(), entry.getKey().toString()));
+						logger.debug(getString("Tracing.3", introspectedColumn.getActualColumnName(), entry.getKey().toString()));
 					}
 				}
 			}
@@ -280,8 +272,7 @@ public class DatabaseIntrospector {
 						introspectedColumn.setFullyQualifiedJavaType(FullyQualifiedJavaType.getObjectInstance());
 						introspectedColumn.setJdbcTypeName("OTHER");
 
-						String warning = getString("Warning.14",
-								Integer.toString(introspectedColumn.getJdbcType()), entry.getKey().toString(), introspectedColumn.getActualColumnName());
+						String warning = getString("Warning.14", Integer.toString(introspectedColumn.getJdbcType()), entry.getKey().toString(), introspectedColumn.getActualColumnName());
 
 						warnings.add(warning);
 					}
@@ -335,8 +326,7 @@ public class DatabaseIntrospector {
 
 				if (columnOverride != null) {
 					if (logger.isDebugEnabled()) {
-						logger.debug(getString("Tracing.4",
-								introspectedColumn.getActualColumnName(), entry.getKey().toString()));
+						logger.debug(getString("Tracing.4", introspectedColumn.getActualColumnName(), entry.getKey().toString()));
 					}
 
 					if (stringHasValue(columnOverride.getJavaProperty())) {
@@ -402,8 +392,7 @@ public class DatabaseIntrospector {
 				st = new StringTokenizer(localSchema, "_%", true);
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
-					if (token.equals("_")
-							|| token.equals("%")) {
+					if (token.equals("_") || token.equals("%")) {
 						sb.append(escapeString);
 					}
 					sb.append(token);
@@ -415,8 +404,7 @@ public class DatabaseIntrospector {
 			st = new StringTokenizer(localTableName, "_%", true);
 			while (st.hasMoreTokens()) {
 				String token = st.nextToken();
-				if (token.equals("_")
-						|| token.equals("%")) {
+				if (token.equals("_") || token.equals("%")) {
 					sb.append(escapeString);
 				}
 				sb.append(token);
@@ -466,9 +454,7 @@ public class DatabaseIntrospector {
 				introspectedColumn.setGeneratedColumn("YES".equals(rs.getString("IS_GENERATEDCOLUMN")));
 			}
 
-			ActualTableName atn = new ActualTableName(rs.getString("TABLE_CAT"),
-					rs.getString("TABLE_SCHEM"),
-					rs.getString("TABLE_NAME"));
+			ActualTableName atn = new ActualTableName(rs.getString("TABLE_CAT"), rs.getString("TABLE_SCHEM"), rs.getString("TABLE_NAME"));
 
 			List<IntrospectedColumn> columns = answer.get(atn);
 			if (columns == null) {
@@ -479,8 +465,7 @@ public class DatabaseIntrospector {
 			columns.add(introspectedColumn);
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(getString("Tracing.2",
-						introspectedColumn.getActualColumnName(), Integer.toString(introspectedColumn.getJdbcType()), atn.toString()));
+				logger.debug(getString("Tracing.2", introspectedColumn.getActualColumnName(), Integer.toString(introspectedColumn.getJdbcType()), atn.toString()));
 			}
 		}
 
@@ -502,8 +487,7 @@ public class DatabaseIntrospector {
 				sb.append(atn.toString());
 			}
 
-			warnings.add(getString("Warning.25",
-					inputAtn.toString(), sb.toString()));
+			warnings.add(getString("Warning.25", inputAtn.toString(), sb.toString()));
 		}
 
 		return answer;
@@ -524,9 +508,9 @@ public class DatabaseIntrospector {
 			// table
 			// configuration, then some sort of DB default is being returned
 			// and we don't want that in our SQL
-			FullyQualifiedTable table = new FullyQualifiedTable(stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, stringHasValue(tc.getSchema()) ? atn.getSchema() : null, atn.getTableName(), tc.getDomainObjectName(), tc
-					.getAlias(), isTrue(tc.getProperty(PropertyRegistry.TABLE_IGNORE_QUALIFIERS_AT_RUNTIME)), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_CATALOG), tc
-							.getProperty(PropertyRegistry.TABLE_RUNTIME_SCHEMA), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_TABLE_NAME), delimitIdentifiers, tc.getDomainObjectRenamingRule(), context);
+			FullyQualifiedTable table = new FullyQualifiedTable(stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, stringHasValue(tc.getSchema()) ? atn.getSchema() : null, atn.getTableName(), tc.getDomainObjectName(), tc.getAlias(),
+					isTrue(tc.getProperty(PropertyRegistry.TABLE_IGNORE_QUALIFIERS_AT_RUNTIME)), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_CATALOG), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_SCHEMA),
+					tc.getProperty(PropertyRegistry.TABLE_RUNTIME_TABLE_NAME), delimitIdentifiers, tc.getDomainObjectRenamingRule(), context);
 
 			IntrospectedTable introspectedTable = ObjectFactory.createIntrospectedTable(tc, table, context);
 
@@ -545,7 +529,8 @@ public class DatabaseIntrospector {
 	}
 
 	/**
-	 * Calls database metadata to retrieve extra information about the table such as remarks associated with the table and the type.
+	 * Calls database metadata to retrieve extra information about the table such as
+	 * remarks associated with the table and the type.
 	 *
 	 * <p>
 	 * If there is any error, we just add a warning and continue.

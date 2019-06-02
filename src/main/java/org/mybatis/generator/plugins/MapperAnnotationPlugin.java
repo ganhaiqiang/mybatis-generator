@@ -26,21 +26,19 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 public class MapperAnnotationPlugin extends PluginAdapter {
 
-    @Override
-    public boolean validate(List<String> warnings) {
-        return true;
-    }
+	@Override
+	public boolean validate(List<String> warnings) {
+		return true;
+	}
 
-    @Override
-    public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable) {
-
-        if (introspectedTable.getTargetRuntime() == TargetRuntime.MYBATIS3) {
-            // don't need to do this for MYBATIS3_DSQL as that runtime already adds this annotation 
-            interfaze.addImportedType(
-                    new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
-            interfaze.addAnnotation("@Mapper");
-        }
-        return true;
-    }
+	@Override
+	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if (introspectedTable.getTargetRuntime() == TargetRuntime.MYBATIS3) {
+			// don't need to do this for MYBATIS3_DSQL as that runtime already adds this
+			// annotation
+			interfaze.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
+			interfaze.addAnnotation("@Mapper");
+		}
+		return true;
+	}
 }
