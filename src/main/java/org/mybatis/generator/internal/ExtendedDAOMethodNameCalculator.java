@@ -35,7 +35,7 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 
 	public String getInsertMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("insert"); //$NON-NLS-1$
+		sb.append("insert");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
 
 		return sb.toString();
@@ -48,17 +48,17 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 	public String getUpdateByPrimaryKeyWithoutBLOBsMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("update"); //$NON-NLS-1$
+		sb.append("update");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
 
 		Rules rules = introspectedTable.getRules();
 
 		if (!rules.generateUpdateByPrimaryKeyWithBLOBs()) {
-			sb.append("ByPrimaryKey"); //$NON-NLS-1$
+			sb.append("ByPrimaryKey");
 		} else if (rules.generateRecordWithBLOBsClass()) {
-			sb.append("ByPrimaryKey"); //$NON-NLS-1$
+			sb.append("ByPrimaryKey");
 		} else {
-			sb.append("ByPrimaryKeyWithoutBLOBs"); //$NON-NLS-1$
+			sb.append("ByPrimaryKeyWithoutBLOBs");
 		}
 
 		return sb.toString();
@@ -70,17 +70,17 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 	 */
 	public String getUpdateByPrimaryKeyWithBLOBsMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("update"); //$NON-NLS-1$
+		sb.append("update");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
 
 		Rules rules = introspectedTable.getRules();
 
 		if (!rules.generateUpdateByPrimaryKeyWithoutBLOBs()) {
-			sb.append("ByPrimaryKey"); //$NON-NLS-1$
+			sb.append("ByPrimaryKey");
 		} else if (rules.generateRecordWithBLOBsClass()) {
-			sb.append("ByPrimaryKey"); //$NON-NLS-1$
+			sb.append("ByPrimaryKey");
 		} else {
-			sb.append("ByPrimaryKeyWithBLOBs"); //$NON-NLS-1$
+			sb.append("ByPrimaryKeyWithBLOBs");
 		}
 
 		return sb.toString();
@@ -88,18 +88,18 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 
 	public String getDeleteByExampleMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("delete"); //$NON-NLS-1$
+		sb.append("delete");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByExample"); //$NON-NLS-1$
+		sb.append("ByExample");
 
 		return sb.toString();
 	}
 
 	public String getDeleteByPrimaryKeyMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("delete"); //$NON-NLS-1$
+		sb.append("delete");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByPrimaryKey"); //$NON-NLS-1$
+		sb.append("ByPrimaryKey");
 
 		return sb.toString();
 	}
@@ -109,14 +109,14 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 	 */
 	public String getSelectByExampleWithoutBLOBsMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select"); //$NON-NLS-1$
+		sb.append("select");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByExample"); //$NON-NLS-1$
+		sb.append("ByExample");
 
 		Rules rules = introspectedTable.getRules();
 
 		if (rules.generateSelectByExampleWithBLOBs()) {
-			sb.append("WithoutBLOBs"); //$NON-NLS-1$
+			sb.append("WithoutBLOBs");
 		}
 
 		return sb.toString();
@@ -127,14 +127,14 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 	 */
 	public String getSelectByExampleWithBLOBsMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select"); //$NON-NLS-1$
+		sb.append("select");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByExample"); //$NON-NLS-1$
+		sb.append("ByExample");
 
 		Rules rules = introspectedTable.getRules();
 
 		if (rules.generateSelectByExampleWithoutBLOBs()) {
-			sb.append("WithBLOBs"); //$NON-NLS-1$
+			sb.append("WithBLOBs");
 		}
 
 		return sb.toString();
@@ -142,53 +142,53 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 
 	public String getSelectByPrimaryKeyMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select"); //$NON-NLS-1$
+		sb.append("select");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByPrimaryKey"); //$NON-NLS-1$
+		sb.append("ByPrimaryKey");
 
 		return sb.toString();
 	}
 
 	public String getUpdateByPrimaryKeySelectiveMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("update"); //$NON-NLS-1$
+		sb.append("update");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByPrimaryKeySelective"); //$NON-NLS-1$
+		sb.append("ByPrimaryKeySelective");
 
 		return sb.toString();
 	}
 
 	public String getCountByExampleMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("count"); //$NON-NLS-1$
+		sb.append("count");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByExample"); //$NON-NLS-1$
+		sb.append("ByExample");
 
 		return sb.toString();
 	}
 
 	public String getUpdateByExampleSelectiveMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("update"); //$NON-NLS-1$
+		sb.append("update");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("ByExampleSelective"); //$NON-NLS-1$
+		sb.append("ByExampleSelective");
 
 		return sb.toString();
 	}
 
 	public String getUpdateByExampleWithBLOBsMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("update"); //$NON-NLS-1$
+		sb.append("update");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
 
 		Rules rules = introspectedTable.getRules();
 
 		if (!rules.generateUpdateByExampleWithoutBLOBs()) {
-			sb.append("ByExample"); //$NON-NLS-1$
+			sb.append("ByExample");
 		} else if (rules.generateRecordWithBLOBsClass()) {
-			sb.append("ByExample"); //$NON-NLS-1$
+			sb.append("ByExample");
 		} else {
-			sb.append("ByExampleWithBLOBs"); //$NON-NLS-1$
+			sb.append("ByExampleWithBLOBs");
 		}
 
 		return sb.toString();
@@ -197,17 +197,17 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 	public String getUpdateByExampleWithoutBLOBsMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("update"); //$NON-NLS-1$
+		sb.append("update");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
 
 		Rules rules = introspectedTable.getRules();
 
 		if (!rules.generateUpdateByExampleWithBLOBs()) {
-			sb.append("ByExample"); //$NON-NLS-1$
+			sb.append("ByExample");
 		} else if (rules.generateRecordWithBLOBsClass()) {
-			sb.append("ByExample"); //$NON-NLS-1$
+			sb.append("ByExample");
 		} else {
-			sb.append("ByExampleWithoutBLOBs"); //$NON-NLS-1$
+			sb.append("ByExampleWithoutBLOBs");
 		}
 
 		return sb.toString();
@@ -215,9 +215,9 @@ public class ExtendedDAOMethodNameCalculator implements DAOMethodNameCalculator 
 
 	public String getInsertSelectiveMethodName(IntrospectedTable introspectedTable) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("insert"); //$NON-NLS-1$
+		sb.append("insert");
 		sb.append(introspectedTable.getFullyQualifiedTable().getDomainObjectName());
-		sb.append("Selective"); //$NON-NLS-1$
+		sb.append("Selective");
 
 		return sb.toString();
 	}

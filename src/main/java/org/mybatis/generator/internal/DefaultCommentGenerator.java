@@ -89,12 +89,12 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	 * @param javaElement the java element
 	 */
 	protected void addJavadocTag(JavaElement javaElement, boolean markAsDoNotDelete) {
-		javaElement.addJavaDocLine(" *"); //$NON-NLS-1$
+		javaElement.addJavaDocLine(" *");
 		StringBuilder sb = new StringBuilder();
-		sb.append(" * "); //$NON-NLS-1$
+		sb.append(" * ");
 		sb.append(MergeConstants.NEW_ELEMENT_TAG);
 		if (markAsDoNotDelete) {
-			sb.append(" do_not_delete_during_merge"); //$NON-NLS-1$
+			sb.append(" do_not_delete_during_merge");
 		}
 		String s = getDateString();
 		if (s != null) {

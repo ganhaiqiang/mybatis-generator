@@ -116,17 +116,17 @@ public class IntrospectedColumn {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Actual Column Name: "); //$NON-NLS-1$
+        sb.append("Actual Column Name: ");
         sb.append(actualColumnName);
-        sb.append(", JDBC Type: "); //$NON-NLS-1$
+        sb.append(", JDBC Type: ");
         sb.append(jdbcType);
-        sb.append(", Nullable: "); //$NON-NLS-1$
+        sb.append(", Nullable: ");
         sb.append(nullable);
-        sb.append(", Length: "); //$NON-NLS-1$
+        sb.append(", Length: ");
         sb.append(length);
-        sb.append(", Scale: "); //$NON-NLS-1$
+        sb.append(", Scale: ");
         sb.append(scale);
-        sb.append(", Identity: "); //$NON-NLS-1$
+        sb.append(", Identity: ");
         sb.append(identity);
 
         return sb.toString();
@@ -192,13 +192,13 @@ public class IntrospectedColumn {
     public boolean isJDBCDateColumn() {
         return fullyQualifiedJavaType.equals(FullyQualifiedJavaType
                 .getDateInstance())
-                && "DATE".equalsIgnoreCase(jdbcTypeName); //$NON-NLS-1$
+                && "DATE".equalsIgnoreCase(jdbcTypeName);
     }
 
     public boolean isJDBCTimeColumn() {
         return fullyQualifiedJavaType.equals(FullyQualifiedJavaType
                 .getDateInstance())
-                && "TIME".equalsIgnoreCase(jdbcTypeName); //$NON-NLS-1$
+                && "TIME".equalsIgnoreCase(jdbcTypeName);
     }
 
     public String getTypeHandler() {
@@ -223,7 +223,7 @@ public class IntrospectedColumn {
 
     public String getJdbcTypeName() {
         if (jdbcTypeName == null) {
-            return "OTHER"; //$NON-NLS-1$
+            return "OTHER";
         }
 
         return jdbcTypeName;

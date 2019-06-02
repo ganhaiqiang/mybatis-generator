@@ -102,14 +102,14 @@ public class XmlElement extends Element {
         }
 
         if (elements.size() > 0) {
-            sb.append(" >"); //$NON-NLS-1$
+            sb.append(" >");
             for (Element element : elements) {
                 OutputUtilities.newLine(sb);
                 sb.append(element.getFormattedContent(indentLevel + 1));
             }
             OutputUtilities.newLine(sb);
             OutputUtilities.xmlIndent(sb, indentLevel);
-            sb.append("</"); //$NON-NLS-1$
+            sb.append("</");
             sb.append(name);
             sb.append('>');
             if(indentLevel == 1){
@@ -117,7 +117,7 @@ public class XmlElement extends Element {
             	OutputUtilities.newLine(sb);
             }
         } else {
-            sb.append(" />"); //$NON-NLS-1$
+            sb.append(" />");
         }
         return sb.toString();
     }

@@ -80,7 +80,7 @@ public class DatabaseIntrospector {
 			rs = databaseMetaData.getPrimaryKeys(table.getIntrospectedCatalog(), table.getIntrospectedSchema(), table.getIntrospectedTableName());
 		} catch (SQLException e) {
 			closeResultSet(rs);
-			warnings.add(getString("Warning.15")); //$NON-NLS-1$
+			warnings.add(getString("Warning.15"));
 			return;
 		}
 
@@ -88,8 +88,8 @@ public class DatabaseIntrospector {
 			// keep primary columns in key sequence order
 			Map<Short, String> keyColumns = new TreeMap<Short, String>();
 			while (rs.next()) {
-				String columnName = rs.getString("COLUMN_NAME"); //$NON-NLS-1$
-				short keySeq = rs.getShort("KEY_SEQ"); //$NON-NLS-1$
+				String columnName = rs.getString("COLUMN_NAME");
+				short keySeq = rs.getShort("KEY_SEQ");
 				keyColumns.put(keySeq, columnName);
 			}
 
@@ -119,7 +119,7 @@ public class DatabaseIntrospector {
 		// actually exists in the table
 		for (ColumnOverride columnOverride : tableConfiguration.getColumnOverrides()) {
 			if (introspectedTable.getColumn(columnOverride.getColumnName()) == null) {
-				warnings.add(getString("Warning.3", //$NON-NLS-1$
+				warnings.add(getString("Warning.3",
 						columnOverride.getColumnName(), table.toString()));
 			}
 		}
@@ -127,17 +127,17 @@ public class DatabaseIntrospector {
 		// make sure that every column listed in ignored columns
 		// actually exists in the table
 		for (String string : tableConfiguration.getIgnoredColumnsInError()) {
-			warnings.add(getString("Warning.4", //$NON-NLS-1$
+			warnings.add(getString("Warning.4",
 					string, table.toString()));
 		}
 
 		GeneratedKey generatedKey = tableConfiguration.getGeneratedKey();
 		if (generatedKey != null && introspectedTable.getColumn(generatedKey.getColumn()) == null) {
 			if (generatedKey.isIdentity()) {
-				warnings.add(getString("Warning.5", //$NON-NLS-1$
+				warnings.add(getString("Warning.5",
 						generatedKey.getColumn(), table.toString()));
 			} else {
-				warnings.add(getString("Warning.6", //$NON-NLS-1$
+				warnings.add(getString("Warning.6",
 						generatedKey.getColumn(), table.toString()));
 			}
 		}
@@ -156,7 +156,7 @@ public class DatabaseIntrospector {
 		Map<ActualTableName, List<IntrospectedColumn>> columns = getColumns(tc);
 
 		if (columns.isEmpty()) {
-			warnings.add(getString("Warning.19", tc.getCatalog(), //$NON-NLS-1$
+			warnings.add(getString("Warning.19", tc.getCatalog(),
 					tc.getSchema(), tc.getTableName()));
 			return null;
 		}
@@ -178,13 +178,13 @@ public class DatabaseIntrospector {
 			if (!introspectedTable.hasAnyColumns()) {
 				// add warning that the table has no columns, remove from the
 				// list
-				String warning = getString("Warning.1", introspectedTable.getFullyQualifiedTable().toString()); //$NON-NLS-1$
+				String warning = getString("Warning.1", introspectedTable.getFullyQualifiedTable().toString());
 				warnings.add(warning);
 				iter.remove();
 			} else if (!introspectedTable.hasPrimaryKeyColumns() && !introspectedTable.hasBaseColumns()) {
 				// add warning that the table has only BLOB columns, remove from
 				// the list
-				String warning = getString("Warning.18", introspectedTable.getFullyQualifiedTable().toString()); //$NON-NLS-1$
+				String warning = getString("Warning.18", introspectedTable.getFullyQualifiedTable().toString());
 				warnings.add(warning);
 				iter.remove();
 			} else {
@@ -210,7 +210,7 @@ public class DatabaseIntrospector {
 				if (tc.isColumnIgnored(introspectedColumn.getActualColumnName())) {
 					tableColumns.remove();
 					if (logger.isDebugEnabled()) {
-						logger.debug(getString("Tracing.3", //$NON-NLS-1$
+						logger.debug(getString("Tracing.3",
 								introspectedColumn.getActualColumnName(), entry.getKey().toString()));
 					}
 				}
@@ -225,7 +225,7 @@ public class DatabaseIntrospector {
 		if (tc.getColumnRenamingRule() != null) {
 			pattern = Pattern.compile(tc.getColumnRenamingRule().getSearchString());
 			replaceString = tc.getColumnRenamingRule().getReplaceString();
-			replaceString = replaceString == null ? "" : replaceString; //$NON-NLS-1$
+			replaceString = replaceString == null ? "" : replaceString;
 		}
 
 		for (Map.Entry<ActualTableName, List<IntrospectedColumn>> entry : columns.entrySet()) {
@@ -272,9 +272,9 @@ public class DatabaseIntrospector {
 					// if the type is not supported, then we'll report a warning
 					if (warn) {
 						introspectedColumn.setFullyQualifiedJavaType(FullyQualifiedJavaType.getObjectInstance());
-						introspectedColumn.setJdbcTypeName("OTHER"); //$NON-NLS-1$
+						introspectedColumn.setJdbcTypeName("OTHER");
 
-						String warning = getString("Warning.14", //$NON-NLS-1$
+						String warning = getString("Warning.14",
 								Integer.toString(introspectedColumn.getJdbcType()), entry.getKey().toString(), introspectedColumn.getActualColumnName());
 
 						warnings.add(warning);
@@ -331,7 +331,7 @@ public class DatabaseIntrospector {
 
 				if (columnOverride != null) {
 					if (logger.isDebugEnabled()) {
-						logger.debug(getString("Tracing.4", //$NON-NLS-1$
+						logger.debug(getString("Tracing.4",
 								introspectedColumn.getActualColumnName(), entry.getKey().toString()));
 					}
 
@@ -400,11 +400,11 @@ public class DatabaseIntrospector {
 			StringBuilder sb = new StringBuilder();
 			StringTokenizer st;
 			if (localSchema != null) {
-				st = new StringTokenizer(localSchema, "_%", true); //$NON-NLS-1$
+				st = new StringTokenizer(localSchema, "_%", true);
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
-					if (token.equals("_") //$NON-NLS-1$
-							|| token.equals("%")) { //$NON-NLS-1$
+					if (token.equals("_")
+							|| token.equals("%")) {
 						sb.append(escapeString);
 					}
 					sb.append(token);
@@ -413,11 +413,11 @@ public class DatabaseIntrospector {
 			}
 
 			sb.setLength(0);
-			st = new StringTokenizer(localTableName, "_%", true); //$NON-NLS-1$
+			st = new StringTokenizer(localTableName, "_%", true);
 			while (st.hasMoreTokens()) {
 				String token = st.nextToken();
-				if (token.equals("_") //$NON-NLS-1$
-						|| token.equals("%")) { //$NON-NLS-1$
+				if (token.equals("_")
+						|| token.equals("%")) {
 					sb.append(escapeString);
 				}
 				sb.append(token);
@@ -429,7 +429,7 @@ public class DatabaseIntrospector {
 
 		if (logger.isDebugEnabled()) {
 			String fullTableName = composeFullyQualifiedTableName(localCatalog, localSchema, localTableName, '.');
-			logger.debug(getString("Tracing.1", fullTableName)); //$NON-NLS-1$
+			logger.debug(getString("Tracing.1", fullTableName));
 		}
 
 		ResultSet rs = databaseMetaData.getColumns(localCatalog, localSchema, localTableName, null);
@@ -438,17 +438,17 @@ public class DatabaseIntrospector {
 			IntrospectedColumn introspectedColumn = ObjectFactory.createIntrospectedColumn(context);
 
 			introspectedColumn.setTableAlias(tc.getAlias());
-			introspectedColumn.setJdbcType(rs.getInt("DATA_TYPE")); //$NON-NLS-1$
-			introspectedColumn.setLength(rs.getInt("COLUMN_SIZE")); //$NON-NLS-1$
-			introspectedColumn.setActualColumnName(rs.getString("COLUMN_NAME")); //$NON-NLS-1$
-			introspectedColumn.setNullable(rs.getInt("NULLABLE") == DatabaseMetaData.columnNullable); //$NON-NLS-1$
-			introspectedColumn.setScale(rs.getInt("DECIMAL_DIGITS")); //$NON-NLS-1$
-			introspectedColumn.setRemarks(rs.getString("REMARKS")); //$NON-NLS-1$
-			introspectedColumn.setDefaultValue(rs.getString("COLUMN_DEF")); //$NON-NLS-1$
+			introspectedColumn.setJdbcType(rs.getInt("DATA_TYPE"));
+			introspectedColumn.setLength(rs.getInt("COLUMN_SIZE"));
+			introspectedColumn.setActualColumnName(rs.getString("COLUMN_NAME"));
+			introspectedColumn.setNullable(rs.getInt("NULLABLE") == DatabaseMetaData.columnNullable);
+			introspectedColumn.setScale(rs.getInt("DECIMAL_DIGITS"));
+			introspectedColumn.setRemarks(rs.getString("REMARKS"));
+			introspectedColumn.setDefaultValue(rs.getString("COLUMN_DEF"));
 
-			ActualTableName atn = new ActualTableName(rs.getString("TABLE_CAT"), //$NON-NLS-1$
-					rs.getString("TABLE_SCHEM"), //$NON-NLS-1$
-					rs.getString("TABLE_NAME")); //$NON-NLS-1$
+			ActualTableName atn = new ActualTableName(rs.getString("TABLE_CAT"),
+					rs.getString("TABLE_SCHEM"),
+					rs.getString("TABLE_NAME"));
 
 			List<IntrospectedColumn> columns = answer.get(atn);
 			if (columns == null) {
@@ -459,7 +459,7 @@ public class DatabaseIntrospector {
 			columns.add(introspectedColumn);
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(getString("Tracing.2", //$NON-NLS-1$
+				logger.debug(getString("Tracing.2",
 						introspectedColumn.getActualColumnName(), Integer.toString(introspectedColumn.getJdbcType()), atn.toString()));
 			}
 		}
@@ -482,7 +482,7 @@ public class DatabaseIntrospector {
 				sb.append(atn.toString());
 			}
 
-			warnings.add(getString("Warning.25", //$NON-NLS-1$
+			warnings.add(getString("Warning.25",
 					inputAtn.toString(), sb.toString()));
 		}
 
