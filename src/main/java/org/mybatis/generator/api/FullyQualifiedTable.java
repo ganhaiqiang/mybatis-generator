@@ -114,8 +114,8 @@ public class FullyQualifiedTable {
 			this.alias = alias.trim();
 		}
 
-		beginningDelimiter = delimitIdentifiers ? context.getBeginningDelimiter() : ""; //$NON-NLS-1$
-		endingDelimiter = delimitIdentifiers ? context.getEndingDelimiter() : ""; //$NON-NLS-1$
+		beginningDelimiter = delimitIdentifiers ? context.getBeginningDelimiter() : "";
+		endingDelimiter = delimitIdentifiers ? context.getEndingDelimiter() : "";
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class FullyQualifiedTable {
 		if (domainObjectRenamingRule != null) {
 			Pattern pattern = Pattern.compile(domainObjectRenamingRule.getSearchString());
 			String replaceString = domainObjectRenamingRule.getReplaceString();
-			replaceString = replaceString == null ? "" : replaceString; //$NON-NLS-1$
+			replaceString = replaceString == null ? "" : replaceString;
 			Matcher matcher = pattern.matcher(finalDomainObjectName);
 			finalDomainObjectName = getCamelCaseString(matcher.replaceAll(replaceString), true);
 		}

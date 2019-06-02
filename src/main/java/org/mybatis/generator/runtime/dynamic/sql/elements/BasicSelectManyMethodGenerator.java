@@ -42,9 +42,9 @@ public class BasicSelectManyMethodGenerator extends AbstractMethodGenerator {
         
         Set<FullyQualifiedJavaType> imports = new HashSet<FullyQualifiedJavaType>();
         
-        FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType("org.mybatis.dynamic.sql.select.render.SelectStatementProvider"); //$NON-NLS-1$
-        FullyQualifiedJavaType adapter = new FullyQualifiedJavaType("org.mybatis.dynamic.sql.util.SqlProviderAdapter"); //$NON-NLS-1$
-        FullyQualifiedJavaType annotation = new FullyQualifiedJavaType("org.apache.ibatis.annotations.SelectProvider"); //$NON-NLS-1$
+        FullyQualifiedJavaType parameterType = new FullyQualifiedJavaType("org.mybatis.dynamic.sql.select.render.SelectStatementProvider");
+        FullyQualifiedJavaType adapter = new FullyQualifiedJavaType("org.mybatis.dynamic.sql.util.SqlProviderAdapter");
+        FullyQualifiedJavaType annotation = new FullyQualifiedJavaType("org.apache.ibatis.annotations.SelectProvider");
         
         imports.add(parameterType);
         imports.add(adapter);
@@ -55,11 +55,11 @@ public class BasicSelectManyMethodGenerator extends AbstractMethodGenerator {
         imports.add(recordType);
         FullyQualifiedJavaType returnType = FullyQualifiedJavaType.getNewListInstance();
         returnType.addTypeArgument(recordType);
-        Method method = new Method("selectMany"); //$NON-NLS-1$
+        Method method = new Method("selectMany");
         method.setReturnType(returnType);
-        method.addParameter(new Parameter(parameterType, "selectStatement")); //$NON-NLS-1$
+        method.addParameter(new Parameter(parameterType, "selectStatement"));
         context.getCommentGenerator().addGeneralMethodAnnotation(method, introspectedTable, imports);
-        method.addAnnotation("@SelectProvider(type=SqlProviderAdapter.class, method=\"select\")"); //$NON-NLS-1$
+        method.addAnnotation("@SelectProvider(type=SqlProviderAdapter.class, method=\"select\")");
 
         MethodAndImports.Builder builder = MethodAndImports.withMethod(method)
                 .withImports(imports);
