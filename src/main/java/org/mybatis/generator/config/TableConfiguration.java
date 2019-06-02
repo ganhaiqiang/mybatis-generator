@@ -62,6 +62,8 @@ public class TableConfiguration extends PropertyHolder {
 
 	private String selectByExampleQueryId;
 
+	private String sqlProviderName;
+	private String mapperName;
 	private String catalog;
 	private String schema;
 	private String tableName;
@@ -236,7 +238,8 @@ public class TableConfiguration extends PropertyHolder {
 	}
 
 	public boolean areAnyStatementsEnabled() {
-		return selectByExampleStatementEnabled || selectByPrimaryKeyStatementEnabled || insertStatementEnabled || updateByPrimaryKeyStatementEnabled || deleteByExampleStatementEnabled || deleteByPrimaryKeyStatementEnabled || countByExampleStatementEnabled || updateByExampleStatementEnabled;
+		return selectByExampleStatementEnabled || selectByPrimaryKeyStatementEnabled || insertStatementEnabled || updateByPrimaryKeyStatementEnabled || deleteByExampleStatementEnabled || deleteByPrimaryKeyStatementEnabled
+				|| countByExampleStatementEnabled || updateByExampleStatementEnabled;
 	}
 
 	public void setGeneratedKey(GeneratedKey generatedKey) {
@@ -249,6 +252,22 @@ public class TableConfiguration extends PropertyHolder {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public String getSqlProviderName() {
+		return sqlProviderName;
+	}
+
+	public void setSqlProviderName(String sqlProviderName) {
+		this.sqlProviderName = sqlProviderName;
+	}
+
+	public String getMapperName() {
+		return mapperName;
+	}
+
+	public void setMapperName(String mapperName) {
+		this.mapperName = mapperName;
 	}
 
 	public String getCatalog() {
@@ -288,9 +307,11 @@ public class TableConfiguration extends PropertyHolder {
 	}
 
 	/**
-	 * This method returns an iterator of Strings. The values are the columns that were specified to be ignored in the table, but do not exist in the table.
+	 * This method returns an iterator of Strings. The values are the columns that
+	 * were specified to be ignored in the table, but do not exist in the table.
 	 * 
-	 * @return an List of Strings - the columns that were improperly configured as ignored columns
+	 * @return an List of Strings - the columns that were improperly configured as
+	 *         ignored columns
 	 */
 	public List<String> getIgnoredColumnsInError() {
 		List<String> answer = new ArrayList<String>();
@@ -470,8 +491,7 @@ public class TableConfiguration extends PropertyHolder {
 				boolean queryId2Set = stringHasValue(selectByPrimaryKeyQueryId);
 
 				if (queryId1Set != queryId2Set) {
-					errors.add(getString("ValidationError.13",
-							fqTableName));
+					errors.add(getString("ValidationError.13", fqTableName));
 				}
 			}
 		}

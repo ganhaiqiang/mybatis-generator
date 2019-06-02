@@ -33,6 +33,7 @@ import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.RootClassInfo;
+import org.mybatis.generator.config.PropertyRegistry;
 
 /**
  * 
@@ -73,6 +74,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
 			}
 		}
 
+		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
 		String rootClass = getRootClass();
 		for (IntrospectedColumn introspectedColumn : introspectedColumns) {
 			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
@@ -87,19 +89,31 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
 
 			Method method = getJavaBeansGetter(introspectedColumn);
 			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-				topLevelClass.addMethod(method);
+				if (!"true".equals(modelUseLombok)) {
+					topLevelClass.addMethod(method);
+				}
 			}
 
 			if (!introspectedTable.isImmutable()) {
 				method = getJavaBeansSetter(introspectedColumn);
 				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-					topLevelClass.addMethod(method);
+					if (!"true".equals(modelUseLombok)) {
+						topLevelClass.addMethod(method);
+					}
 				}
 			}
 		}
 
 		List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
 		if (context.getPlugins().modelBaseRecordClassGenerated(topLevelClass, introspectedTable)) {
+			List<String> annotationList = topLevelClass.getAnnotations();
+			if ("true".equals(modelUseLombok) && !annotationList.contains("@Data")) {
+				topLevelClass.addImportedType("lombok.Data");
+				topLevelClass.addImportedType("lombok.ToString");
+
+				topLevelClass.addAnnotation("@Data");
+				topLevelClass.addAnnotation("@ToString");
+			}
 			answer.add(topLevelClass);
 		}
 		return answer;

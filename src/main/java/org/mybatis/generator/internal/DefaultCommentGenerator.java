@@ -65,7 +65,8 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	}
 
 	/**
-	 * Adds a suitable comment to warn users that the element was generated, and when it was generated.
+	 * Adds a suitable comment to warn users that the element was generated, and
+	 * when it was generated.
 	 */
 	public void addComment(XmlElement xmlElement) {
 
@@ -83,8 +84,9 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	}
 
 	/**
-	 * This method adds the custom javadoc tag for. You may do nothing if you do not wish to include the Javadoc tag - however, if you do not include the
-	 * Javadoc tag then the Java merge capability of the eclipse plugin will break.
+	 * This method adds the custom javadoc tag for. You may do nothing if you do not
+	 * wish to include the Javadoc tag - however, if you do not include the Javadoc
+	 * tag then the Java merge capability of the eclipse plugin will break.
 	 * 
 	 * @param javaElement the java element
 	 */
@@ -105,7 +107,8 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	}
 
 	/**
-	 * This method returns a formated date string to include in the Javadoc tag and XML comments. You may return null if you do not want the date in these
+	 * This method returns a formated date string to include in the Javadoc tag and
+	 * XML comments. You may return null if you do not want the date in these
 	 * documentation elements.
 	 * 
 	 * @return a string representing the current timestamp, or null
@@ -122,7 +125,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	 * 这里我用的是MySQL数据库表的注释信息作为说明文字
 	 */
 	public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		innerClass.addJavaDocLine("/**");
 		innerClass.addJavaDocLine(" * " + introspectedTable.getFullyQualifiedTable().getRemarks());
 		innerClass.addJavaDocLine(" * ");

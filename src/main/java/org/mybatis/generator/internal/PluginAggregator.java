@@ -33,10 +33,13 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.config.Context;
 
 /**
- * This class is for internal use only. It contains a list of plugins for the current context and is used to aggregate plugins together. This class implements
- * the rule that if any plugin returns "false" from a method, then no other plugin is called.
+ * This class is for internal use only. It contains a list of plugins for the
+ * current context and is used to aggregate plugins together. This class
+ * implements the rule that if any plugin returns "false" from a method, then no
+ * other plugin is called.
  * <p>
- * This class does not follow the normal plugin lifecycle and should not be subclassed by clients.
+ * This class does not follow the normal plugin lifecycle and should not be
+ * subclassed by clients.
  * 
  * @author Jeff Butler
  * 
@@ -771,12 +774,7 @@ public final class PluginAggregator implements Plugin {
 		return rc;
 	}
 
-	public boolean modelFieldGenerated(
-			Field field,
-			TopLevelClass topLevelClass,
-			IntrospectedColumn introspectedColumn,
-			IntrospectedTable introspectedTable,
-			Plugin.ModelClassType modelClassType) {
+	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
 		boolean rc = true;
 
 		for (Plugin plugin : plugins) {
@@ -789,12 +787,7 @@ public final class PluginAggregator implements Plugin {
 		return rc;
 	}
 
-	public boolean modelGetterMethodGenerated(
-			Method method,
-			TopLevelClass topLevelClass,
-			IntrospectedColumn introspectedColumn,
-			IntrospectedTable introspectedTable,
-			Plugin.ModelClassType modelClassType) {
+	public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
 		boolean rc = true;
 
 		for (Plugin plugin : plugins) {
@@ -807,12 +800,7 @@ public final class PluginAggregator implements Plugin {
 		return rc;
 	}
 
-	public boolean modelSetterMethodGenerated(
-			Method method,
-			TopLevelClass topLevelClass,
-			IntrospectedColumn introspectedColumn,
-			IntrospectedTable introspectedTable,
-			Plugin.ModelClassType modelClassType) {
+	public boolean modelSetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
 		boolean rc = true;
 
 		for (Plugin plugin : plugins) {

@@ -33,6 +33,7 @@ import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.RootClassInfo;
+import org.mybatis.generator.config.PropertyRegistry;
 
 /**
  * 
@@ -70,6 +71,7 @@ public class PrimaryKeyGenerator extends AbstractJavaGenerator {
 			}
 		}
 
+		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
 		for (IntrospectedColumn introspectedColumn : introspectedTable.getPrimaryKeyColumns()) {
 			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
 				continue;
@@ -83,13 +85,17 @@ public class PrimaryKeyGenerator extends AbstractJavaGenerator {
 
 			Method method = getJavaBeansGetter(introspectedColumn);
 			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
-				topLevelClass.addMethod(method);
+				if (!"true".equals(modelUseLombok)) {
+					topLevelClass.addMethod(method);
+				}
 			}
 
 			if (!introspectedTable.isImmutable()) {
 				method = getJavaBeansSetter(introspectedColumn);
 				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
-					topLevelClass.addMethod(method);
+					if (!"true".equals(modelUseLombok)) {
+						topLevelClass.addMethod(method);
+					}
 				}
 			}
 		}
