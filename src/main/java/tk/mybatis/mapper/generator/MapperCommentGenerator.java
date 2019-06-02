@@ -140,7 +140,7 @@ public class MapperCommentGenerator implements CommentGenerator {
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
             field.addJavaDocLine("/**");
             StringBuilder sb = new StringBuilder();
-            sb.append(" * ");
+            sb.append("  * ");
             sb.append(introspectedColumn.getRemarks());
             field.addJavaDocLine(sb.toString());
             field.addJavaDocLine(" */");

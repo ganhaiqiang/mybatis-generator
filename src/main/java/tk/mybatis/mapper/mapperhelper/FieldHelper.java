@@ -254,12 +254,12 @@ public class FieldHelper {
                     if (desc.getReadMethod() != null
                             && desc.getReadMethod().getGenericReturnType() != null
                             && desc.getReadMethod().getGenericReturnType() instanceof TypeVariable) {
-                        entityField.setJavaType(genericMap.get(((TypeVariable) desc.getReadMethod().getGenericReturnType()).getName()));
+                        entityField.setJavaType(genericMap.get(((TypeVariable<?>) desc.getReadMethod().getGenericReturnType()).getName()));
                     } else if (desc.getWriteMethod() != null
                             && desc.getWriteMethod().getGenericParameterTypes() != null
                             && desc.getWriteMethod().getGenericParameterTypes().length == 1
                             && desc.getWriteMethod().getGenericParameterTypes()[0] instanceof TypeVariable) {
-                        entityField.setJavaType(genericMap.get(((TypeVariable) desc.getWriteMethod().getGenericParameterTypes()[0]).getName()));
+                        entityField.setJavaType(genericMap.get(((TypeVariable<?>) desc.getWriteMethod().getGenericParameterTypes()[0]).getName()));
                     }
                     entityFields.add(entityField);
                 }
@@ -290,10 +290,10 @@ public class FieldHelper {
                 if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                     EntityField entityField = new EntityField(field, null);
                     if (field.getGenericType() != null && field.getGenericType() instanceof TypeVariable) {
-                        if (genericMap == null || !genericMap.containsKey(((TypeVariable) field.getGenericType()).getName())) {
+                        if (genericMap == null || !genericMap.containsKey(((TypeVariable<?>) field.getGenericType()).getName())) {
                             throw new MapperException(entityClass + "字段" + field.getName() + "的泛型类型无法获取!");
                         } else {
-                            entityField.setJavaType(genericMap.get(((TypeVariable) field.getGenericType()).getName()));
+                            entityField.setJavaType(genericMap.get(((TypeVariable<?>) field.getGenericType()).getName()));
                         }
                     } else {
                         entityField.setJavaType(field.getType());

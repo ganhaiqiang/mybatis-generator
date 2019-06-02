@@ -35,6 +35,7 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.RootClassInfo;
+import org.mybatis.generator.config.PropertyRegistry;
 
 /**
  * 
@@ -43,64 +44,58 @@ import org.mybatis.generator.codegen.RootClassInfo;
  */
 public class PrimaryKeyGenerator extends AbstractJavaGenerator {
 
-    public PrimaryKeyGenerator() {
-        super();
-    }
+	public PrimaryKeyGenerator() {
+		super();
+	}
 
-    @Override
-    public List<CompilationUnit> getCompilationUnits() {
-        FullyQualifiedTable table = introspectedTable.getFullyQualifiedTable();
-        progressCallback.startTask(getString(
-                "Progress.7", table.toString()));
-        Plugin plugins = context.getPlugins();
-        CommentGenerator commentGenerator = context.getCommentGenerator();
+	@Override
+	public List<CompilationUnit> getCompilationUnits() {
+		FullyQualifiedTable table = introspectedTable.getFullyQualifiedTable();
+		progressCallback.startTask(getString("Progress.7", table.toString()));
+		Plugin plugins = context.getPlugins();
+		CommentGenerator commentGenerator = context.getCommentGenerator();
 
-        TopLevelClass topLevelClass = new TopLevelClass(introspectedTable
-                .getPrimaryKeyType());
-        topLevelClass.setVisibility(JavaVisibility.PUBLIC);
-        commentGenerator.addJavaFileComment(topLevelClass);
+		TopLevelClass topLevelClass = new TopLevelClass(introspectedTable.getPrimaryKeyType());
+		topLevelClass.setVisibility(JavaVisibility.PUBLIC);
+		commentGenerator.addJavaFileComment(topLevelClass);
 
-        String rootClass = getRootClass();
-        if (rootClass != null) {
-            topLevelClass.setSuperClass(new FullyQualifiedJavaType(rootClass));
-            topLevelClass.addImportedType(topLevelClass.getSuperClass());
-        }
+		String rootClass = getRootClass();
+		if (rootClass != null) {
+			topLevelClass.setSuperClass(new FullyQualifiedJavaType(rootClass));
+			topLevelClass.addImportedType(topLevelClass.getSuperClass());
+		}
 
-        for (IntrospectedColumn introspectedColumn : introspectedTable
-                .getPrimaryKeyColumns()) {
-            if (RootClassInfo.getInstance(rootClass, warnings)
-                    .containsProperty(introspectedColumn)) {
-                continue;
-            }
+		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
+		for (IntrospectedColumn introspectedColumn : introspectedTable.getPrimaryKeyColumns()) {
+			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
+				continue;
+			}
 
-            Field field = getJavaBeansField(introspectedColumn, context, introspectedTable);
-            if (plugins.modelFieldGenerated(field, topLevelClass,
-                    introspectedColumn, introspectedTable,
-                    Plugin.ModelClassType.PRIMARY_KEY)) {
-                topLevelClass.addField(field);
-                topLevelClass.addImportedType(field.getType());
-            }
+			Field field = getJavaBeansField(introspectedColumn, context, introspectedTable);
+			if (plugins.modelFieldGenerated(field, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
+				topLevelClass.addField(field);
+				topLevelClass.addImportedType(field.getType());
+			}
 
-            Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
-            if (plugins.modelGetterMethodGenerated(method, topLevelClass,
-                    introspectedColumn, introspectedTable,
-                    Plugin.ModelClassType.PRIMARY_KEY)) {
-                topLevelClass.addMethod(method);
-            }
+				Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
+				if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
+					if (!"true".equals(modelUseLombok)) {
+					topLevelClass.addMethod(method);
+					}
+				}
 
-            method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
-            if (plugins.modelSetterMethodGenerated(method, topLevelClass,
-                    introspectedColumn, introspectedTable,
-                    Plugin.ModelClassType.PRIMARY_KEY)) {
-                topLevelClass.addMethod(method);
-            }
-        }
+				method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
+				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
+					if (!"true".equals(modelUseLombok)) {
+					topLevelClass.addMethod(method);
+					}
+				}
+		}
 
-        List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
-        if (context.getPlugins().modelPrimaryKeyClassGenerated(
-                topLevelClass, introspectedTable)) {
-            answer.add(topLevelClass);
-        }
-        return answer;
-    }
+		List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
+		if (context.getPlugins().modelPrimaryKeyClassGenerated(topLevelClass, introspectedTable)) {
+			answer.add(topLevelClass);
+		}
+		return answer;
+	}
 }

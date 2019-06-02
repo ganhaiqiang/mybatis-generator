@@ -28,20 +28,22 @@ package tk.mybatis.mapper;
  * @author liuzh
  */
 public class MapperException extends RuntimeException {
-    public MapperException() {
-        super();
-    }
+	private static final long serialVersionUID = 1L;
 
-    public MapperException(String message) {
-        super(message);
-    }
+	public MapperException() {
+		super();
+	}
 
-    public MapperException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public MapperException(String message) {
+		super(message);
+	}
 
-    public MapperException(Throwable cause) {
-        super(cause);
-    }
+	public MapperException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public MapperException(Throwable cause) {
+		super(cause);
+	}
 
 }

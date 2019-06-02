@@ -36,6 +36,7 @@ import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.RootClassInfo;
+import org.mybatis.generator.config.PropertyRegistry;
 
 /**
  * This model generator builds a flat model qith default constructor and
@@ -84,6 +85,7 @@ public class DynamicSqlModelGenerator extends AbstractJavaGenerator {
 			}
 		}
 
+		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
 		String rootClass = getRootClass();
 		for (IntrospectedColumn introspectedColumn : introspectedColumns) {
 			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
@@ -102,7 +104,9 @@ public class DynamicSqlModelGenerator extends AbstractJavaGenerator {
 			method.getJavaDocLines().clear();
 			commentGenerator.addGeneralMethodAnnotation(method, introspectedTable, introspectedColumn, topLevelClass.getImportedTypes());
 			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-				topLevelClass.addMethod(method);
+				if (!"true".equals(modelUseLombok)) {
+					topLevelClass.addMethod(method);
+				}
 			}
 
 			if (!introspectedTable.isImmutable()) {
@@ -110,7 +114,9 @@ public class DynamicSqlModelGenerator extends AbstractJavaGenerator {
 				method.getJavaDocLines().clear();
 				commentGenerator.addGeneralMethodAnnotation(method, introspectedTable, introspectedColumn, topLevelClass.getImportedTypes());
 				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
-					topLevelClass.addMethod(method);
+					if (!"true".equals(modelUseLombok)) {
+						topLevelClass.addMethod(method);
+					}
 				}
 			}
 		}

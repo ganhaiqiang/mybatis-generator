@@ -52,6 +52,7 @@ public class PropertyRegistry {
     public static final String CONTEXT_ENDING_DELIMITER = "endingDelimiter";
     public static final String CONTEXT_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
     public static final String CONTEXT_JAVA_FILE_ENCODING = "javaFileEncoding";
+    public static final String CONTEXT_MODEL_USE_LOMBOK = "modelUseLombok";
     public static final String CONTEXT_JAVA_FORMATTER = "javaFormatter";
     public static final String CONTEXT_XML_FORMATTER = "xmlFormatter";
 

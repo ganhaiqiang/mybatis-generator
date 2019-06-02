@@ -76,15 +76,15 @@ public class DefaultCommentGenerator implements CommentGenerator {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		compilationUnit.addFileCommentLine("/*");
 		compilationUnit.addFileCommentLine(" * " + compilationUnit.getType().getShortName() + ".java");
-		compilationUnit.addFileCommentLine(" * Copyright(C) 20xx-2019 xxx公司");
-		compilationUnit.addFileCommentLine(" * All rights reserved.");
+		compilationUnit.addFileCommentLine(" * Copyright © 2016 xx公司 All rights reserved.");
 		compilationUnit.addFileCommentLine(" * -----------------------------------------------");
 		compilationUnit.addFileCommentLine(" * " + sdf.format(new Date()) + " Created");
 		compilationUnit.addFileCommentLine(" */");
 	}
 
 	/**
-	 * Adds a suitable comment to warn users that the element was generated, and when it was generated.
+	 * Adds a suitable comment to warn users that the element was generated, and
+	 * when it was generated.
 	 *
 	 * @param xmlElement the xml element
 	 */
@@ -136,7 +136,8 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	}
 
 	/**
-	 * This method adds the custom javadoc tag for. You may do nothing if you do not wish to include the Javadoc tag - however, if you do not include the Javadoc
+	 * This method adds the custom javadoc tag for. You may do nothing if you do not
+	 * wish to include the Javadoc tag - however, if you do not include the Javadoc
 	 * tag then the Java merge capability of the eclipse plugin will break.
 	 *
 	 * @param javaElement       the java element
@@ -159,8 +160,9 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	}
 
 	/**
-	 * Returns a formated date string to include in the Javadoc tag and XML comments. You may return null if you do not want the date in these documentation
-	 * elements.
+	 * Returns a formated date string to include in the Javadoc tag and XML
+	 * comments. You may return null if you do not want the date in these
+	 * documentation elements.
 	 * 
 	 * @return a string representing the current timestamp, or null
 	 */
@@ -216,7 +218,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
 
 	@Override
 	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		topLevelClass.addJavaDocLine("/**");
 		topLevelClass.addJavaDocLine(" * " + introspectedTable.getRemarks());
 		topLevelClass.addJavaDocLine(" * ");
@@ -273,7 +275,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		if (introspectedColumn.getRemarks() != null && !"".equals(introspectedColumn.getRemarks())) {
 			field.addJavaDocLine("/**");
-			field.addJavaDocLine(" * " + introspectedColumn.getRemarks());
+			field.addJavaDocLine("  * " + introspectedColumn.getRemarks());
 			field.addJavaDocLine(" */");
 		}
 		// if (suppressAllComments) {
@@ -421,10 +423,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	@Override
 	public void addGeneralMethodAnnotation(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn, Set<FullyQualifiedJavaType> imports) {
 		imports.add(new FullyQualifiedJavaType("javax.annotation.Generated"));
-		String comment = "Source field: "
-							+ introspectedTable.getFullyQualifiedTable().toString()
-							+ "."
-							+ introspectedColumn.getActualColumnName();
+		String comment = "Source field: " + introspectedTable.getFullyQualifiedTable().toString() + "." + introspectedColumn.getActualColumnName();
 		method.addAnnotation(getGeneratedAnnotation(comment));
 	}
 
@@ -438,10 +437,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	@Override
 	public void addFieldAnnotation(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn, Set<FullyQualifiedJavaType> imports) {
 		imports.add(new FullyQualifiedJavaType("javax.annotation.Generated"));
-		String comment = "Source field: "
-							+ introspectedTable.getFullyQualifiedTable().toString()
-							+ "."
-							+ introspectedColumn.getActualColumnName();
+		String comment = "Source field: " + introspectedTable.getFullyQualifiedTable().toString() + "." + introspectedColumn.getActualColumnName();
 		field.addAnnotation(getGeneratedAnnotation(comment));
 
 		if (!suppressAllComments && addRemarkComments) {

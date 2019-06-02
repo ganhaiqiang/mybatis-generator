@@ -695,7 +695,7 @@ public class MyBatisGeneratorConfigurationParser {
 
         String name = attributes.getProperty("name");
         String value = attributes.getProperty("value");
-
+        
         propertyHolder.addProperty(name, value);
     }
 

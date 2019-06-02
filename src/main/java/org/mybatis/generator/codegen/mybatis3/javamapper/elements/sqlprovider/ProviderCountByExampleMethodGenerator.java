@@ -33,56 +33,51 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
  */
 public class ProviderCountByExampleMethodGenerator extends AbstractJavaProviderMethodGenerator {
 
-    public ProviderCountByExampleMethodGenerator(boolean useLegacyBuilder) {
-        super(useLegacyBuilder);
-    }
+	public ProviderCountByExampleMethodGenerator(boolean useLegacyBuilder) {
+		super(useLegacyBuilder);
+	}
 
-    @Override
-    public void addClassElements(TopLevelClass topLevelClass) {
-        Set<String> staticImports = new TreeSet<String>();
-        Set<FullyQualifiedJavaType> importedTypes = new TreeSet<FullyQualifiedJavaType>();
+	@Override
+	public void addClassElements(TopLevelClass topLevelClass) {
+		Set<String> staticImports = new TreeSet<String>();
+		Set<FullyQualifiedJavaType> importedTypes = new TreeSet<FullyQualifiedJavaType>();
 
-        if (useLegacyBuilder) {
-            staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.BEGIN");
-            staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.FROM");
-            staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.SELECT");
-            staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.SQL");
-        } else {
-            importedTypes.add(NEW_BUILDER_IMPORT);
-        }
+		if (useLegacyBuilder) {
+			staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.BEGIN");
+			staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.FROM");
+			staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.SELECT");
+			staticImports.add("org.apache.ibatis.jdbc.SqlBuilder.SQL");
+		} else {
+			importedTypes.add(NEW_BUILDER_IMPORT);
+		}
 
-        FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(introspectedTable.getExampleType());
-        importedTypes.add(fqjt);
+		FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(introspectedTable.getExampleType());
+		importedTypes.add(fqjt);
 
-        Method method = new Method(
-                introspectedTable.getCountByExampleStatementId());
-        method.setVisibility(JavaVisibility.PUBLIC);
-        method.setReturnType(FullyQualifiedJavaType.getStringInstance());
-        method.addParameter(new Parameter(fqjt, "example"));
-        
-        context.getCommentGenerator().addGeneralMethodComment(method,
-                introspectedTable);
+		Method method = new Method(introspectedTable.getCountByExampleStatementId());
+		method.setVisibility(JavaVisibility.PUBLIC);
+		method.setReturnType(FullyQualifiedJavaType.getStringInstance());
+		method.addParameter(new Parameter(fqjt, "example"));
 
-        if (useLegacyBuilder) {
-            method.addBodyLine("BEGIN();");
-            method.addBodyLine("SELECT(\"count(*)\");");
-            method.addBodyLine(String.format("FROM(\"%s\");",
-                    escapeStringForJava(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime())));
-            method.addBodyLine("applyWhere(example, false);");
-            method.addBodyLine("return SQL();");
-        } else {
-            method.addBodyLine("SQL sql = new SQL();");
-            method.addBodyLine(String.format("sql.SELECT(\"count(*)\").FROM(\"%s\");",
-                    escapeStringForJava(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime())));
-            method.addBodyLine("applyWhere(sql, example, false);");
-            method.addBodyLine("return sql.toString();");
-        }
-        
-        if (context.getPlugins().providerCountByExampleMethodGenerated(method, topLevelClass,
-                introspectedTable)) {
-            topLevelClass.addStaticImports(staticImports);
-            topLevelClass.addImportedTypes(importedTypes);
-            topLevelClass.addMethod(method);
-        }
-    }
+		context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
+
+		if (useLegacyBuilder) {
+			method.addBodyLine("BEGIN();");
+			method.addBodyLine("SELECT(\"count(*)\");");
+			method.addBodyLine(String.format("FROM(\"%s\");", escapeStringForJava(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime())));
+			method.addBodyLine("applyWhere(example, false);");
+			method.addBodyLine("return SQL();");
+		} else {
+			method.addBodyLine("SQL sql = new SQL();");
+			method.addBodyLine(String.format("sql.SELECT(\"count(*)\").FROM(\"%s\");", escapeStringForJava(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime())));
+			method.addBodyLine("applyWhere(sql, example, false);");
+			method.addBodyLine("return sql.toString();");
+		}
+
+		if (context.getPlugins().providerCountByExampleMethodGenerated(method, topLevelClass, introspectedTable)) {
+			topLevelClass.addStaticImports(staticImports);
+			topLevelClass.addImportedTypes(importedTypes);
+			topLevelClass.addMethod(method);
+		}
+	}
 }
