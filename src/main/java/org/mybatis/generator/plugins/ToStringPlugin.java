@@ -80,10 +80,13 @@ public class ToStringPlugin extends PluginAdapter {
 		method.addBodyLine("StringBuilder sb = new StringBuilder();");
 		method.addBodyLine("sb.append(getClass().getSimpleName());");
 		method.addBodyLine("sb.append(\" [\");");
-		method.addBodyLine("sb.append(\"Hash = \").append(hashCode());");
+//		method.addBodyLine("sb.append(\"Hash = \").append(hashCode());");
 		StringBuilder sb = new StringBuilder();
 		for (Field field : topLevelClass.getFields()) {
 			String property = field.getName();
+			if (property.equals("serialVersionUID")) {
+				continue;
+			}
 			sb.setLength(0);
 			sb.append("sb.append(\"").append(", ").append(property).append("=\")").append(".append(").append(property).append(");");
 			method.addBodyLine(sb.toString());
