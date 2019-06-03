@@ -66,12 +66,12 @@ public class MapperCommentGenerator implements CommentGenerator {
 	 */
 	@Override
 	public void addComment(XmlElement xmlElement) {
-		xmlElement.addElement(new TextElement("<!--"));
-		StringBuilder sb = new StringBuilder();
-		sb.append("  WARNING - ");
-		sb.append(MergeConstants.NEW_ELEMENT_TAG);
-		xmlElement.addElement(new TextElement(sb.toString()));
-		xmlElement.addElement(new TextElement("-->"));
+//		xmlElement.addElement(new TextElement("<!--"));
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("  WARNING - ");
+//		sb.append(MergeConstants.NEW_ELEMENT_TAG);
+//		xmlElement.addElement(new TextElement(sb.toString()));
+//		xmlElement.addElement(new TextElement("-->"));
 	}
 
 	@Override
