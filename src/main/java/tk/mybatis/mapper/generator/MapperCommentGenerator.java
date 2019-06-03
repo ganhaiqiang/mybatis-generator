@@ -37,7 +37,6 @@ import org.mybatis.generator.api.dom.java.InnerEnum;
 import org.mybatis.generator.api.dom.java.JavaElement;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
-import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.config.MergeConstants;
 import org.mybatis.generator.internal.util.StringUtility;
@@ -143,12 +142,13 @@ public class MapperCommentGenerator implements CommentGenerator {
 	@Override
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
-			field.addJavaDocLine("/**");
-			StringBuilder sb = new StringBuilder();
-			sb.append(" * ");
-			sb.append(introspectedColumn.getRemarks());
-			field.addJavaDocLine(sb.toString());
-			field.addJavaDocLine(" */");
+//			field.addJavaDocLine("/**");
+//			StringBuilder sb = new StringBuilder();
+//			sb.append(" * ");
+//			sb.append(introspectedColumn.getRemarks());
+//			field.addJavaDocLine(sb.toString());
+//			field.addJavaDocLine(" */");
+			field.addJavaDocLine("/** " + introspectedColumn.getRemarks() + " */");
 		}
 		// 添加注解
 		if (field.isTransient()) {

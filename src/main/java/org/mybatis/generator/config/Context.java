@@ -131,7 +131,8 @@ public class Context extends PropertyHolder {
 	}
 
 	/**
-	 * This method does a simple validate, it makes sure that all required fields have been filled in. It does not do any more complex operations such as
+	 * This method does a simple validate, it makes sure that all required fields
+	 * have been filled in. It does not do any more complex operations such as
 	 * validating that database tables exist or validating that named columns exist
 	 */
 	public void validate(List<String> errors) {
@@ -218,7 +219,8 @@ public class Context extends PropertyHolder {
 	}
 
 	/**
-	 * Builds an XmlElement representation of this context. Note that the XML may not necessarily validate if the context is invalid. Call the
+	 * Builds an XmlElement representation of this context. Note that the XML may
+	 * not necessarily validate if the context is invalid. Call the
 	 * <code>validate</code> method to check validity of this context.
 	 * 
 	 * @return the XML representation of this context
@@ -383,21 +385,29 @@ public class Context extends PropertyHolder {
 	}
 
 	/**
-	 * Introspect tables based on the configuration specified in the constructor. This method is long running.
+	 * Introspect tables based on the configuration specified in the constructor.
+	 * This method is long running.
 	 * 
-	 * @param callback                 a progress callback if progress information is desired, or <code>null</code>
-	 * @param warnings                 any warning generated from this method will be added to the List. Warnings are always Strings.
-	 * @param fullyQualifiedTableNames a set of table names to generate. The elements of the set must be Strings that exactly match what's specified in the
-	 *                                 configuration. For example, if table name = "foo" and schema = "bar", then the fully qualified table name is "foo.bar".
-	 *                                 If the Set is null or empty, then all tables in the configuration will be used for code generation.
+	 * @param callback                 a progress callback if progress information
+	 *                                 is desired, or <code>null</code>
+	 * @param warnings                 any warning generated from this method will
+	 *                                 be added to the List. Warnings are always
+	 *                                 Strings.
+	 * @param fullyQualifiedTableNames a set of table names to generate. The
+	 *                                 elements of the set must be Strings that
+	 *                                 exactly match what's specified in the
+	 *                                 configuration. For example, if table name =
+	 *                                 "foo" and schema = "bar", then the fully
+	 *                                 qualified table name is "foo.bar". If the Set
+	 *                                 is null or empty, then all tables in the
+	 *                                 configuration will be used for code
+	 *                                 generation.
 	 * 
-	 * @throws SQLException         if some error arises while introspecting the specified database tables.
+	 * @throws SQLException         if some error arises while introspecting the
+	 *                              specified database tables.
 	 * @throws InterruptedException if the progress callback reports a cancel
 	 */
-	public void introspectTables(
-			ProgressCallback callback,
-			List<String> warnings,
-			Set<String> fullyQualifiedTableNames) throws SQLException, InterruptedException {
+	public void introspectTables(ProgressCallback callback, List<String> warnings, Set<String> fullyQualifiedTableNames) throws SQLException, InterruptedException {
 
 		introspectedTables = new ArrayList<IntrospectedTable>();
 		JavaTypeResolver javaTypeResolver = ObjectFactory.createJavaTypeResolver(this, warnings);
@@ -450,11 +460,8 @@ public class Context extends PropertyHolder {
 		return steps;
 	}
 
-	public void generateFiles(
-			ProgressCallback callback,
-			List<GeneratedJavaFile> generatedJavaFiles,
-			List<GeneratedXmlFile> generatedXmlFiles,
-			List<String> warnings) throws InterruptedException {
+	public void generateFiles(ProgressCallback callback, List<GeneratedJavaFile> generatedJavaFiles, List<GeneratedXmlFile> generatedXmlFiles, List<String> warnings)
+			throws InterruptedException {
 
 		pluginAggregator = new PluginAggregator();
 		for (PluginConfiguration pluginConfiguration : pluginConfigurations) {
@@ -462,8 +469,7 @@ public class Context extends PropertyHolder {
 			if (plugin.validate(warnings)) {
 				pluginAggregator.addPlugin(plugin);
 			} else {
-				warnings.add(getString("Warning.24",
-						pluginConfiguration.getConfigurationType(), id));
+				warnings.add(getString("Warning.24", pluginConfiguration.getConfigurationType(), id));
 			}
 		}
 

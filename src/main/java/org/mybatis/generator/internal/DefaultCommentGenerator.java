@@ -139,9 +139,10 @@ public class DefaultCommentGenerator implements CommentGenerator {
 
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		if (introspectedColumn.getRemarks() != null && !"".equals(introspectedColumn.getRemarks())) {
-			field.addJavaDocLine("/**");
-			field.addJavaDocLine(" * " + introspectedColumn.getRemarks());
-			field.addJavaDocLine(" */");
+//			field.addJavaDocLine("/**");
+//			field.addJavaDocLine(" * " + introspectedColumn.getRemarks());
+//			field.addJavaDocLine(" */");
+			field.addJavaDocLine("/** " + introspectedColumn.getRemarks() + " */");
 		}
 	}
 
