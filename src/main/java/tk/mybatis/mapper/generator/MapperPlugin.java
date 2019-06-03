@@ -113,9 +113,9 @@ public class MapperPlugin extends FalseMethodPlugin {
 		}
 
 		topLevelClass.addFileCommentLine("/*");
-		topLevelClass.addFileCommentLine(" * " + topLevelClass.getType().getShortName() + ".java");
-		topLevelClass.addFileCommentLine(" * Copyright © " + new SimpleDateFormat("yyyy").format(new Date()) + " xxx公司");
-		topLevelClass.addFileCommentLine(" * All rights reserved.");
+		topLevelClass.addFileCommentLine(" * @Title: " + topLevelClass.getType().getShortName() + ".java");
+		topLevelClass.addFileCommentLine(" * @Package: " + topLevelClass.getType().getPackageName());
+		topLevelClass.addFileCommentLine(" * Copyright © " + new SimpleDateFormat("yyyy").format(new Date()) + " xxx公司 All rights reserved.");
 		topLevelClass.addFileCommentLine(" * -----------------------------------------------");
 		topLevelClass.addFileCommentLine(" * " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + " Created");
 		topLevelClass.addFileCommentLine(" */");

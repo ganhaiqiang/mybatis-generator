@@ -56,9 +56,9 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	public void addJavaFileComment(CompilationUnit compilationUnit) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		compilationUnit.addFileCommentLine("/*");
-		compilationUnit.addFileCommentLine(" * " + compilationUnit.getType().getShortName() + ".java");
-		compilationUnit.addFileCommentLine(" * Copyright(C) 20xx-2019 xxx公司");
-		compilationUnit.addFileCommentLine(" * All rights reserved.");
+		compilationUnit.addFileCommentLine(" * @Title: " + compilationUnit.getType().getShortName() + ".java");
+		compilationUnit.addFileCommentLine(" * @Package: " + compilationUnit.getType().getPackageName());
+		compilationUnit.addFileCommentLine(" * Copyright © " + new SimpleDateFormat("yyyy").format(new Date()) + " xxx公司 All rights reserved.");
 		compilationUnit.addFileCommentLine(" * -----------------------------------------------");
 		compilationUnit.addFileCommentLine(" * " + sdf.format(new Date()) + " Created");
 		compilationUnit.addFileCommentLine(" */");
