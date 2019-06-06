@@ -38,8 +38,6 @@ import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.util.StringUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import tk.mybatis.mapper.MapperException;
 
@@ -49,8 +47,6 @@ import tk.mybatis.mapper.MapperException;
  * @author liuzh
  */
 public class MapperPlugin extends FalseMethodPlugin {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MapperPlugin.class);
-
 	private Set<String> mappers = new HashSet<String>();
 	private boolean caseSensitive = false;
 	private boolean useMapperCommentGenerator = true;
@@ -124,7 +120,6 @@ public class MapperPlugin extends FalseMethodPlugin {
 
 		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
 		if ("true".equals(modelUseLombok)) {
-			LOGGER.info(topLevelClass.getType().getShortName() + "使用lombok注解");
 			topLevelClass.addImportedType("lombok.Data");
 			topLevelClass.addImportedType("lombok.ToString");
 
