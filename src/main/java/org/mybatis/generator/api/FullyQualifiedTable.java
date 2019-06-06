@@ -48,46 +48,67 @@ public class FullyQualifiedTable {
 	private String beginningDelimiter;
 	private String endingDelimiter;
 	private DomainObjectRenamingRule domainObjectRenamingRule;
+	private String remarks;
 
 	/**
-	 * This object is used to hold information related to the table itself, not the columns in the table.
+	 * This object is used to hold information related to the table itself, not the
+	 * columns in the table.
 	 *
-	 * @param introspectedCatalog       the actual catalog of the table as returned from DatabaseMetaData. This value should only be set if the user configured a
-	 *                                  catalog. Otherwise the DatabaseMetaData is reporting some database default that we don't want in the generated code.
-	 * @param introspectedSchema        the actual schema of the table as returned from DatabaseMetaData. This value should only be set if the user configured a
-	 *                                  schema. Otherwise the DatabaseMetaData is reporting some database default that we don't want in the generated code.
-	 * @param introspectedTableName     the actual table name as returned from DatabaseMetaData
-	 * @param domainObjectName          the configured domain object name for this table. If nothing is configured, we'll build the domain object named based on the
+	 * @param introspectedCatalog       the actual catalog of the table as returned
+	 *                                  from DatabaseMetaData. This value should
+	 *                                  only be set if the user configured a
+	 *                                  catalog. Otherwise the DatabaseMetaData is
+	 *                                  reporting some database default that we
+	 *                                  don't want in the generated code.
+	 * @param introspectedSchema        the actual schema of the table as returned
+	 *                                  from DatabaseMetaData. This value should
+	 *                                  only be set if the user configured a schema.
+	 *                                  Otherwise the DatabaseMetaData is reporting
+	 *                                  some database default that we don't want in
+	 *                                  the generated code.
+	 * @param introspectedTableName     the actual table name as returned from
+	 *                                  DatabaseMetaData
+	 * @param domainObjectName          the configured domain object name for this
+	 *                                  table. If nothing is configured, we'll build
+	 *                                  the domain object named based on the
 	 *                                  tableName or runtimeTableName.
-	 * @param alias                     a configured alias for the table. This alias will be added to the table name in the SQL
-	 * @param ignoreQualifiersAtRuntime if true, then the catalog and schema qualifiers will be ignored when composing fully qualified names in the generated SQL.
-	 *                                  This is used, for example, when the user needs to specify a specific schema for generating code but does not want the schema
+	 * @param alias                     a configured alias for the table. This alias
+	 *                                  will be added to the table name in the SQL
+	 * @param ignoreQualifiersAtRuntime if true, then the catalog and schema
+	 *                                  qualifiers will be ignored when composing
+	 *                                  fully qualified names in the generated SQL.
+	 *                                  This is used, for example, when the user
+	 *                                  needs to specify a specific schema for
+	 *                                  generating code but does not want the schema
 	 *                                  in the generated SQL
-	 * @param runtimeCatalog            this is used to "rename" the catalog in the generated SQL. This is useful, for example, when generating code against one
-	 *                                  catalog that should run with a different catalog.
-	 * @param runtimeSchema             this is used to "rename" the schema in the generated SQL. This is useful, for example, when generating code against one
-	 *                                  schema that should run with a different schema.
-	 * @param runtimeTableName          this is used to "rename" the table in the generated SQL. This is useful, for example, when generating code to run with an
-	 *                                  Oracle synonym. The user would have to specify the actual table name and schema for generation, but would want to use the
-	 *                                  synonym name in the generated SQL
-	 * @param delimitIdentifiers        if true, then the table identifiers will be delimited at runtime. The delimiter characters are obtained from the Context.
-	 * @param domainObjectRenamingRule  If domainObjectName is not configured, we'll build the domain object named based on the tableName or runtimeTableName. And
-	 *                                  then we use the domain object renaming rule to generate the final domain object name.
+	 * @param runtimeCatalog            this is used to "rename" the catalog in the
+	 *                                  generated SQL. This is useful, for example,
+	 *                                  when generating code against one catalog
+	 *                                  that should run with a different catalog.
+	 * @param runtimeSchema             this is used to "rename" the schema in the
+	 *                                  generated SQL. This is useful, for example,
+	 *                                  when generating code against one schema that
+	 *                                  should run with a different schema.
+	 * @param runtimeTableName          this is used to "rename" the table in the
+	 *                                  generated SQL. This is useful, for example,
+	 *                                  when generating code to run with an Oracle
+	 *                                  synonym. The user would have to specify the
+	 *                                  actual table name and schema for generation,
+	 *                                  but would want to use the synonym name in
+	 *                                  the generated SQL
+	 * @param delimitIdentifiers        if true, then the table identifiers will be
+	 *                                  delimited at runtime. The delimiter
+	 *                                  characters are obtained from the Context.
+	 * @param domainObjectRenamingRule  If domainObjectName is not configured, we'll
+	 *                                  build the domain object named based on the
+	 *                                  tableName or runtimeTableName. And then we
+	 *                                  use the domain object renaming rule to
+	 *                                  generate the final domain object name.
 	 * @param context                   the context
 	 */
-	public FullyQualifiedTable(
-			String introspectedCatalog,
-			String introspectedSchema,
-			String introspectedTableName,
-			String domainObjectName,
-			String alias,
-			boolean ignoreQualifiersAtRuntime,
-			String runtimeCatalog,
-			String runtimeSchema,
-			String runtimeTableName,
-			boolean delimitIdentifiers,
-			DomainObjectRenamingRule domainObjectRenamingRule,
-			Context context) {
+	public FullyQualifiedTable(String introspectedCatalog, String introspectedSchema, String introspectedTableName, String domainObjectName, String alias,
+			boolean ignoreQualifiersAtRuntime, String runtimeCatalog, String runtimeSchema, String runtimeTableName, boolean delimitIdentifiers,
+			DomainObjectRenamingRule domainObjectRenamingRule, Context context) {
 		super();
 		this.introspectedCatalog = introspectedCatalog;
 		this.introspectedSchema = introspectedSchema;
@@ -205,7 +226,8 @@ public class FullyQualifiedTable {
 	}
 
 	/**
-	 * Returns a string that is the fully qualified table name, with underscores as the separator.
+	 * Returns a string that is the fully qualified table name, with underscores as
+	 * the separator.
 	 * 
 	 * @return the namespace
 	 */
@@ -261,7 +283,8 @@ public class FullyQualifiedTable {
 
 		FullyQualifiedTable other = (FullyQualifiedTable) obj;
 
-		return areEqual(this.introspectedTableName, other.introspectedTableName) && areEqual(this.introspectedCatalog, other.introspectedCatalog) && areEqual(this.introspectedSchema, other.introspectedSchema);
+		return areEqual(this.introspectedTableName, other.introspectedTableName) && areEqual(this.introspectedCatalog, other.introspectedCatalog)
+				&& areEqual(this.introspectedSchema, other.introspectedSchema);
 	}
 
 	/*
@@ -299,11 +322,13 @@ public class FullyQualifiedTable {
 	}
 
 	/**
-	 * Calculates a Java package fragment based on the table catalog and schema. If qualifiers are ignored, then this method will return an empty string.
+	 * Calculates a Java package fragment based on the table catalog and schema. If
+	 * qualifiers are ignored, then this method will return an empty string.
 	 * 
 	 * <p>
-	 * This method is used for determining the sub package for Java client and SQL map (XML) objects. It ignores any sub-package added to the domain object name in
-	 * the table configuration.
+	 * This method is used for determining the sub package for Java client and SQL
+	 * map (XML) objects. It ignores any sub-package added to the domain object name
+	 * in the table configuration.
 	 *
 	 * @param isSubPackagesEnabled the is sub packages enabled
 	 * @return the subpackage for this table
@@ -333,11 +358,13 @@ public class FullyQualifiedTable {
 	}
 
 	/**
-	 * Calculates a Java package fragment based on the table catalog and schema. If qualifiers are ignored, then this method will return an empty string.
+	 * Calculates a Java package fragment based on the table catalog and schema. If
+	 * qualifiers are ignored, then this method will return an empty string.
 	 * 
 	 * <p>
-	 * This method is used for determining the sub package for Java model objects only. It takes into account the possibility that a sub-package was added to the
-	 * domain object name in the table configuration.
+	 * This method is used for determining the sub package for Java model objects
+	 * only. It takes into account the possibility that a sub-package was added to
+	 * the domain object name in the table configuration.
 	 *
 	 * @param isSubPackagesEnabled the is sub packages enabled
 	 * @return the subpackage for this table
@@ -371,5 +398,13 @@ public class FullyQualifiedTable {
 
 	public String getDomainObjectSubPackage() {
 		return domainObjectSubPackage;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 }

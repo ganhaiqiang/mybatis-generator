@@ -28,6 +28,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -272,7 +273,8 @@ public class DatabaseIntrospector {
 						introspectedColumn.setFullyQualifiedJavaType(FullyQualifiedJavaType.getObjectInstance());
 						introspectedColumn.setJdbcTypeName("OTHER");
 
-						String warning = getString("Warning.14", Integer.toString(introspectedColumn.getJdbcType()), entry.getKey().toString(), introspectedColumn.getActualColumnName());
+						String warning = getString("Warning.14", Integer.toString(introspectedColumn.getJdbcType()), entry.getKey().toString(),
+								introspectedColumn.getActualColumnName());
 
 						warnings.add(warning);
 					}
@@ -363,7 +365,8 @@ public class DatabaseIntrospector {
 		String localSchema;
 		String localTableName;
 
-		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc.getSchema()) || stringContainsSpace(tc.getTableName());
+		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc.getSchema())
+				|| stringContainsSpace(tc.getTableName());
 
 		if (delimitIdentifiers) {
 			localCatalog = tc.getCatalog();
@@ -493,8 +496,9 @@ public class DatabaseIntrospector {
 		return answer;
 	}
 
-	private List<IntrospectedTable> calculateIntrospectedTables(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) {
-		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc.getSchema()) || stringContainsSpace(tc.getTableName());
+	private List<IntrospectedTable> calculateIntrospectedTables(TableConfiguration tc, Map<ActualTableName, List<IntrospectedColumn>> columns) throws SQLException {
+		boolean delimitIdentifiers = tc.isDelimitIdentifiers() || stringContainsSpace(tc.getCatalog()) || stringContainsSpace(tc.getSchema())
+				|| stringContainsSpace(tc.getTableName());
 
 		List<IntrospectedTable> answer = new ArrayList<IntrospectedTable>();
 
@@ -508,9 +512,28 @@ public class DatabaseIntrospector {
 			// table
 			// configuration, then some sort of DB default is being returned
 			// and we don't want that in our SQL
-			FullyQualifiedTable table = new FullyQualifiedTable(stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, stringHasValue(tc.getSchema()) ? atn.getSchema() : null, atn.getTableName(), tc.getDomainObjectName(), tc.getAlias(),
-					isTrue(tc.getProperty(PropertyRegistry.TABLE_IGNORE_QUALIFIERS_AT_RUNTIME)), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_CATALOG), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_SCHEMA),
+			FullyQualifiedTable table = new FullyQualifiedTable(stringHasValue(tc.getCatalog()) ? atn.getCatalog() : null, stringHasValue(tc.getSchema()) ? atn.getSchema() : null,
+					atn.getTableName(), tc.getDomainObjectName(), tc.getAlias(), isTrue(tc.getProperty(PropertyRegistry.TABLE_IGNORE_QUALIFIERS_AT_RUNTIME)),
+					tc.getProperty(PropertyRegistry.TABLE_RUNTIME_CATALOG), tc.getProperty(PropertyRegistry.TABLE_RUNTIME_SCHEMA),
 					tc.getProperty(PropertyRegistry.TABLE_RUNTIME_TABLE_NAME), delimitIdentifiers, tc.getDomainObjectRenamingRule(), context);
+
+			Statement stmt = databaseMetaData.getConnection().createStatement();
+			// ================================
+			String productName = databaseMetaData.getDatabaseProductName();
+			String queryString = "";
+			if ("MySQL".equals(productName)) {
+				queryString = "SHOW TABLE STATUS LIKE '" + atn.getTableName() + "'";
+			}
+			if ("Oracle".equals(productName)) {
+				queryString = "SELECT TABLE_NAME, TABLE_TYPE, COMMENTS \"COMMENT\" FROM USER_TAB_COMMENTS WHERE TABLE_NAME = '" + atn.getTableName() + "'";
+			}
+			// ================================
+			ResultSet rs = stmt.executeQuery(queryString);
+			while (rs.next()) {
+				table.setRemarks(rs.getString("COMMENT"));
+			}
+			closeResultSet(rs);
+			stmt.close();
 
 			IntrospectedTable introspectedTable = ObjectFactory.createIntrospectedTable(tc, table, context);
 
