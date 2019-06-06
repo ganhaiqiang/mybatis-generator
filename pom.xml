@@ -3,7 +3,7 @@
 
 	<groupId>org.mybatis.generator</groupId>
 	<artifactId>MybatisGenerator</artifactId>
-	<version>1.7</version>
+	<version>1.3.7</version>
 	<packaging>jar</packaging>
 
 	<name>MybatisGenerator</name>
