@@ -138,12 +138,13 @@ public class MapperCommentGenerator implements CommentGenerator {
     @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
-            field.addJavaDocLine("/**");
-            StringBuilder sb = new StringBuilder();
-            sb.append("  * ");
-            sb.append(introspectedColumn.getRemarks());
-            field.addJavaDocLine(sb.toString());
-            field.addJavaDocLine(" */");
+//            field.addJavaDocLine("/**");
+//            StringBuilder sb = new StringBuilder();
+//            sb.append("  * ");
+//            sb.append(introspectedColumn.getRemarks());
+//            field.addJavaDocLine(sb.toString());
+//            field.addJavaDocLine(" */");
+            field.addJavaDocLine("/** "+introspectedColumn.getRemarks()+" */");
         }
         //添加注解
         if (field.isTransient()) {
