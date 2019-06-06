@@ -77,19 +77,19 @@ public class PrimaryKeyGenerator extends AbstractJavaGenerator {
 				topLevelClass.addImportedType(field.getType());
 			}
 
-				Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
-				if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
-					if (!"true".equals(modelUseLombok)) {
+			Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
+			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
+				if (!"true".equals(modelUseLombok)) {
 					topLevelClass.addMethod(method);
-					}
 				}
+			}
 
-				method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
-				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
-					if (!"true".equals(modelUseLombok)) {
+			method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
+			if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.PRIMARY_KEY)) {
+				if (!"true".equals(modelUseLombok)) {
 					topLevelClass.addMethod(method);
-					}
 				}
+			}
 		}
 
 		List<CompilationUnit> answer = new ArrayList<CompilationUnit>();

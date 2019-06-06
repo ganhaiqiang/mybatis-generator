@@ -37,8 +37,6 @@ import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.RootClassInfo;
 import org.mybatis.generator.config.PropertyRegistry;
 
-import com.alibaba.fastjson.JSON;
-
 /**
  * Generates a Base class for iBatis.
  * 
@@ -83,6 +81,7 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
 			}
 		}
 
+		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
 		String rootClass = getRootClass();
 		for (IntrospectedColumn introspectedColumn : introspectedColumns) {
 			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
@@ -95,15 +94,16 @@ public class BaseRecordGenerator extends AbstractJavaGenerator {
 				topLevelClass.addImportedType(field.getType());
 			}
 
-			String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
-			if (!"true".equals(modelUseLombok)) {
-				Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
-				if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
+			Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
+			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
+				if (!"true".equals(modelUseLombok)) {
 					topLevelClass.addMethod(method);
 				}
+			}
 
-				method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
-				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
+			method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
+			if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.BASE_RECORD)) {
+				if (!"true".equals(modelUseLombok)) {
 					topLevelClass.addMethod(method);
 				}
 			}

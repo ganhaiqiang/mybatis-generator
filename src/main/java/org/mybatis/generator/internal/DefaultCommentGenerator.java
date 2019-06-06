@@ -214,7 +214,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
 	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		topLevelClass.addJavaDocLine("/**");
-		topLevelClass.addJavaDocLine(" * " + introspectedTable.getRemarks());
+		topLevelClass.addJavaDocLine(" * " + introspectedTable.getFullyQualifiedTable().getRemarks());
 		topLevelClass.addJavaDocLine(" * ");
 		topLevelClass.addJavaDocLine(" * @author " + System.getenv("USERNAME"));
 		topLevelClass.addJavaDocLine(" * @date " + sdf.format(new Date()));

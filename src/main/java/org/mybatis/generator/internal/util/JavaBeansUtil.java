@@ -184,7 +184,7 @@ public class JavaBeansUtil {
 		method.setVisibility(JavaVisibility.PUBLIC);
 		method.setReturnType(fqjt);
 		method.setName(getGetterMethodName(property, fqjt));
-		context.getCommentGenerator().addGetterComment(method, introspectedTable, introspectedColumn);
+//		context.getCommentGenerator().addGetterComment(method, introspectedTable, introspectedColumn);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("return ");
@@ -216,7 +216,7 @@ public class JavaBeansUtil {
 		method.setVisibility(JavaVisibility.PUBLIC);
 		method.setName(getSetterMethodName(property));
 		method.addParameter(new Parameter(fqjt, property));
-		context.getCommentGenerator().addSetterComment(method, introspectedTable, introspectedColumn);
+//		context.getCommentGenerator().addSetterComment(method, introspectedTable, introspectedColumn);
 
 		StringBuilder sb = new StringBuilder();
 		if (introspectedColumn.isStringColumn() && isTrimStringsEnabled(introspectedColumn)) {

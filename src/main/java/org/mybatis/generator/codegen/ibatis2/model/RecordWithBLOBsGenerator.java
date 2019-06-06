@@ -64,6 +64,7 @@ public class RecordWithBLOBsGenerator extends AbstractJavaGenerator {
 			topLevelClass.setSuperClass(introspectedTable.getPrimaryKeyType());
 		}
 
+		String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
 		String rootClass = getRootClass();
 		for (IntrospectedColumn introspectedColumn : introspectedTable.getBLOBColumns()) {
 			if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
@@ -76,15 +77,16 @@ public class RecordWithBLOBsGenerator extends AbstractJavaGenerator {
 				topLevelClass.addImportedType(field.getType());
 			}
 
-			String modelUseLombok = context.getProperty(PropertyRegistry.CONTEXT_MODEL_USE_LOMBOK);
-			if (!"true".equals(modelUseLombok)) {
-				Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
-				if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.RECORD_WITH_BLOBS)) {
+			Method method = getJavaBeansGetter(introspectedColumn, context, introspectedTable);
+			if (plugins.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.RECORD_WITH_BLOBS)) {
+				if (!"true".equals(modelUseLombok)) {
 					topLevelClass.addMethod(method);
 				}
+			}
 
-				method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
-				if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.RECORD_WITH_BLOBS)) {
+			method = getJavaBeansSetter(introspectedColumn, context, introspectedTable);
+			if (plugins.modelSetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, Plugin.ModelClassType.RECORD_WITH_BLOBS)) {
+				if (!"true".equals(modelUseLombok)) {
 					topLevelClass.addMethod(method);
 				}
 			}
