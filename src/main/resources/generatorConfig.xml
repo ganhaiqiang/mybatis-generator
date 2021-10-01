@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<properties resource="generatorConfig.properties" />
+
+	<!-- <classPathEntry location="mysql-connector-java-5.1.46.jar" /> -->
+
+	<context id="my" defaultModelType="flat" targetRuntime="MyBatis3">
+		<!-- 生成的Java文件的编码 -->
+		<property name="javaFileEncoding" value="UTF-8"></property>
+
+		<!-- 格式化java代码 -->
+		<property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"></property>
+
+		<!-- 格式化XML代码 -->
+		<property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"></property>
+
+		<!-- 生成的model是否使用lombok -->
+		<property name="modelUseLombok" value="${modelUseLombok}"></property>
+
+		<!--通用 Mapper 插件，可以生成带注解的实体类 -->
+		<plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+			<property name="mappers" value="tk.mybatis.mapper.common.Mapper,tk.mybatis.mapper.common.IdsMapper,tk.mybatis.mapper.common.MySqlMapper" />
+			<property name="caseSensitive" value="true" />
+			<!-- <property name="forceAnnotation" value="true"/> -->
+			<!-- <property name="beginningDelimiter" value="`"/> -->
+			<!-- <property name="endingDelimiter" value="`"/> -->
+		</plugin>
+
+		<!--通用代码生成器插件 -->
+		<!-- <plugin type="tk.mybatis.mapper.generator.TemplateFilePlugin"> -->
+		<!-- <property name="targetProject" value="src"/> -->
+		<!-- <property name="targetPackage" value="test.mapper"/> -->
+		<!-- <property name="templatePath" value="generator/mapper.ftl"/> -->
+		<!-- <property name="mapperSuffix" value="Dao"/> -->
+		<!-- <property name="fileName" value="${tableClass.shortClassName}${mapperSuffix}.java"/> -->
+		<!-- </plugin> -->
+		
+		<plugin type="tk.mybatis.mapper.generator.TemplateFilePlugin">
+			<property name="targetProject" value="src"/>
+			<property name="targetPackage" value="demo.service"/>
+			<property name="templatePath" value="generator/service.ftl"/>
+			<property name="mapperSuffix" value="Service"/>
+			<property name="fileName" value="${tableClass.shortClassName}${mapperSuffix}.java"/>
+		</plugin>
+		
+		<plugin type="tk.mybatis.mapper.generator.TemplateFilePlugin">
+			<property name="targetProject" value="src"/>
+			<property name="targetPackage" value="demo.service"/>
+			<property name="templatePath" value="generator/serviceImpl.ftl"/>
+			<property name="mapperSuffix" value="ServiceImpl"/>
+			<property name="fileName" value="${tableClass.shortClassName}${mapperSuffix}.java"/>
+		</plugin>
+		
+		<plugin type="tk.mybatis.mapper.generator.TemplateFilePlugin">
+			<property name="targetProject" value="src"/>
+			<property name="targetPackage" value="demo.controller"/>
+			<property name="templatePath" value="generator/controller.ftl"/>
+			<property name="mapperSuffix" value="Controller"/>
+			<property name="fileName" value="${tableClass.shortClassName}${mapperSuffix}.java"/>
+		</plugin>
+
+		<!-- 生成的pojo，将implements Serializable,为生成的Java模型类添加序列化接口 -->
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+
+		<!-- 为生成的Java模型创建一个toString方法 -->
+		<!-- <plugin type="org.mybatis.generator.plugins.ToStringPlugin" /> -->
+
+		<!-- 生成 entity时，生成hashcode和equals方法 <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" /> -->
+
+		<!-- 这个插件用来在XXXExample类中生成大小写敏感的LIKE方法 （插件本身用处不大，但是我们可以通过这个插件学习给XXXExample类添加额外的方法） -->
+		<!-- <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin" /> -->
+
+		<!-- 这个插件可以使用正则表达式的方式来重命名生成的XXXExample类， 通过配置 searchString和replaceString属性来完成 （这个实现原理请参考MBG配置文件中的columnRenamingRule元素） -->
+		<!-- <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin"> -->
+		<!-- <property name="searchString" value="Example$" /> -->
+		<!-- <property name="replaceString" value="Criteria" /> -->
+		<!-- </plugin> -->
+
+		<!-- 这个插件可以生成一个新的selectByExample方法，这个方法可以接受一个RowBounds参数， 主要用来实现分页（当然，我们后面会生成我们自己的分页查询函数）， 这个插件只针对MyBatis3/MyBatis3Simple有效 Mapper中会加入一个新的方法： selectByExampleWithRowbounds(XxxExample example, RowBounds rowBounds) -->
+		<!-- <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"/> -->
+
+		<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+		<commentGenerator>
+			<!-- 是否生成注释代时间戳 -->
+			<property name="suppressDate" value="true" />
+			<!-- 是否取消注释 -->
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="${driverClass}" connectionURL="${connectionURL}" userId="${userId}" password="${password}" />
+
+		<!-- java类型处理器 用于处理DB中的类型到Java中的类型，默认使用JavaTypeResolverDefaultImpl； 注意一点，默认会先尝试使用Integer，Long，Short等来对应DECIMAL和 NUMERIC数据类型； -->
+		<javaTypeResolver>
+			<!-- true：使用BigDecimal对应DECIMAL和 NUMERIC数据类型 false：默认, scale>0;length>18：使用BigDecimal; scale=0;length[10,18]：使用Long； scale=0;length[5,9]：使用Integer； scale=0;length<5：使用Short； -->
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<javaModelGenerator targetPackage="${model.package}" targetProject="src">
+			<!-- for MyBatis3/MyBatis3Simple，自动为每一个生成的类创建一个构造方法，构造方法包含了所有的field；而不是使用setter； <property name="constructorBased" value="false"/> -->
+
+			<!-- for MyBatis3 / MyBatis3Simple，是否创建一个不可变的类，如果为true，那么MBG会创建一个没有setter方法的类，取而代之的是类似constructorBased的类 <property name="immutable" value="false"/> -->
+
+			<!-- 设置一个根对象， 如果设置了这个根对象，那么生成的keyClass或者recordClass会继承这个类； 在Table的rootClass属性中可以覆盖该选项 注意：如果在key class或者record class中有root class相同的属性， MBG就不会重新生成这些属性了，包括： 1，属性名相同，类型相同，有相同的getter/setter方法； <property name="rootClass" value="com._520it.mybatis.domain.BaseDomain"/> -->
+
+			<!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->
+			<property name="enableSubPackages" value="true" />
+
+			<!-- 从数据库返回的值被清理前后的空格 -->
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="${xml.package}" targetProject="src">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<javaClientGenerator targetPackage="${mapper.package}" targetProject="src" type="XMLMAPPER">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<table tableName="%" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+			<domainObjectRenamingRule searchString="^T" replaceString="" />
+			<!-- <columnRenamingRule searchString="^T" replaceString=""/> -->
+		</table>
+	</context>
+</generatorConfiguration>
